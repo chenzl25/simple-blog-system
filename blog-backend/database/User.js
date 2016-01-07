@@ -186,9 +186,6 @@ UserSchema.statics.editComment = function(commentOwnerAccount ,postId, commentId
                                   return Promise.reject('该blog不存在');
                                 }
                                 debug(postData);
-                                if (postData.isForbidden) {
-                                  return Promise.reject('该blog已经被禁');
-                                }
                                 var commentData = postData.comments.id(commentId);
                                 if (!commentData) {
                                   return Promise.reject('该评论不存在');
@@ -217,9 +214,6 @@ UserSchema.statics.deleteComment = function(commentOwnerAccount ,postId, comment
                                   return Promise.reject('该blog不存在');
                                 }
                                 debug(postData);
-                                if (postData.isForbidden) {
-                                  return Promise.reject('该blog已经被禁');
-                                }
                                 var commentData = postData.comments.id(commentId);
                                 if (!commentData) {
                                   return Promise.reject('该评论不存在');

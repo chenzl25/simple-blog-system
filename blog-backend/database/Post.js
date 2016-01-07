@@ -129,7 +129,19 @@ PostSchema.statics.switchForbiddenPost = function(postId) {
   )
 }
 function forbiddenFilter(postsDatas) {
-  return postsDatas
+  return postsDatas.map((postData) => {
+    if (postData.isForbidden) {
+      postData.title = '';
+      postData.content = '';
+    }
+    postData.comments = postData.comments.map((commentData) => {
+      if (commentData.isForbidden) {
+        commentData.content = '';
+      }
+      return commentData;
+    })
+    return postData;
+  })
 }
 
 

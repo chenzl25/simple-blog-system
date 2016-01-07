@@ -74,12 +74,48 @@ describe('Manager: Register, Login and Post:', function() {
 					done(err);
 				});
 	});
-	it('should forbidden the post successfully', function(done) {
-	 agentManager.put('/Mapi/post/'+postId)
+	it('should add post successfully', function(done) {
+	 agentUser.post('/api/post')
+				.send({title: 'happy222', content: 'hehe222'})
 				.then(
 					(res) => {
 						expect(res.body.error).equal(false);
-						expect(res.body.message).equal('禁blog改变成功');
+						expect(res.body.postData).to.be.a('object');
+						postId = res.body.postData._id;
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should add comment successfully', function(done) {
+	 agentUser.post('/api/post/'+postId+'/comment')
+				.send({content: 'commmmmmmmmmmeeeeennnnttt'})
+				.then(
+					(res) => {
+						// console.log(res.body);
+						expect(res.body.error).equal(false);
+						expect(res.body.commentData).to.be.a('object');
+						expect(res.body.commentData.content).equal('commmmmmmmmmmeeeeennnnttt');
+						expect(res.body.commentData.ownerAccount).equal('222222');
+						commentId =res.body.commentData._id;
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should add comment successfully', function(done) {
+	 agentUser.post('/api/post/'+postId+'/comment')
+				.send({content: 'commmmmmmeennnnttt'})
+				.then(
+					(res) => {
+						// console.log(res.body);
+						expect(res.body.error).equal(false);
+						expect(res.body.commentData).to.be.a('object');
+						expect(res.body.commentData.content).equal('commmmmmmeennnnttt');
+						expect(res.body.commentData.ownerAccount).equal('222222');
+						commentId =res.body.commentData._id;
 						done();
 					}
 				).catch(function(err) {
@@ -99,7 +135,7 @@ describe('Manager: Register, Login and Post:', function() {
 				});
 	});
 	it('should forbidden the post fail for not the manager', function(done) {
-	 agentUser.put('/Mapi/post/'+postId+1)
+	 agentUser.put('/Mapi/post/'+postId)
 				.then(
 					(res) => {
 						expect(res.body.error).equal(true);
@@ -110,13 +146,44 @@ describe('Manager: Register, Login and Post:', function() {
 					done(err);
 				});
 	});
-	it('should forbidden the post fail for not the manager', function(done) {
+	it('should forbidden the post successfully', function(done) {
+	 agentManager.put('/Mapi/post/'+postId)
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						expect(res.body.message).equal('禁blog改变成功');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should edit fail for the forbidden ', function(done) {
 	 agentUser.put('/api/post/'+postId)
 	 			.send({'content':'adssad', title:'sasddada'})
 				.then(
 					(res) => {
+						// console.log(res.body)
 						expect(res.body.error).equal(true);
 						expect(res.body.message).equal('该blog已经被禁');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should show the get posts have been forbidden', function(done) {
+	 agentUser.get('/api/posts')
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						// console.log(res.body.postsData);
+						expect(res.body.postsData).to.be.a('array');
+						expect(res.body.postsData).to.has.length(2);
+						expect(res.body.postsData[1].isForbidden).equal(true);
+						expect(res.body.postsData[1].title).equal('');
+						expect(res.body.postsData[1].content).equal('');
+						console.log(res.body.postsData[1].comments);
 						done();
 					}
 				).catch(function(err) {
