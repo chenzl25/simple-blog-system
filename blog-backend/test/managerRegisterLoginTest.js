@@ -7,7 +7,7 @@ var User = require('../database/User');
 var Post = require(('../database/Post'));
 var mongoose = require('mongoose');
 chai.use(chaiHttp);
-describe('Register, Login and Post:', function() {
+describe('Manager: Register, Login and Post:', function() {
   before(function(done){
     User.collection.drop();
     Post.collection.drop();
@@ -20,7 +20,7 @@ describe('Register, Login and Post:', function() {
   });
 	it('register only by name', function(done) {
 		chai.request(server)
-				.post('/api/register')
+				.post('/Mapi/register')
 				.send({'name':'dylan'})
 				.end(function(err, res) {
 					expect(res.body.error).equal(true);
@@ -30,7 +30,7 @@ describe('Register, Login and Post:', function() {
 	});
 	it('register only by account', function(done) {
 		chai.request(server)
-				.post('/api/register')
+				.post('/Mapi/register')
 				.send({'account':'14331048'})
 				.end(function(err, res) {
 					expect(res.body.error).equal(true);
@@ -38,7 +38,7 @@ describe('Register, Login and Post:', function() {
 					done();
 				});
 	});
-	it('register only by password', function(done) {
+	it('register only by password/manager', function(done) {
 		chai.request(server)
 				.post('/api/register')
 				.send({'password':'111111'})
@@ -50,7 +50,7 @@ describe('Register, Login and Post:', function() {
 	});
 	it('register unformat', function(done) {
 		chai.request(server)
-				.post('/api/register')
+				.post('/Mapi/register')
 				.send({'account': '11111','password':'11111', 'name':'hahasadasdsasdadsaadsadadsa'})
 				.end(function(err, res) {
 					expect(res.body.error).equal(true);
@@ -60,7 +60,7 @@ describe('Register, Login and Post:', function() {
 	});
 	it('register successfully', function(done) {
 		chai.request(server)
-				.post('/api/register')
+				.post('/Mapi/register')
 				.send({'account':'111111', 'password':'111111', 'name':'dylan'})
 				.end(function(err, res) {
 					expect(res.body.error).equal(false);
@@ -70,7 +70,7 @@ describe('Register, Login and Post:', function() {
 	});
 	it('register already have registerd', function(done) {
 		chai.request(server)
-				.post('/api/register')
+				.post('/Mapi/register')
 				.send({'account':'111111', 'password':'111111', 'name':'dylan'})
 				.end(function(err, res) {
 					expect(res.body.error).equal(true);
@@ -103,6 +103,7 @@ describe('Register, Login and Post:', function() {
 				.send({'account':'111111', 'password':'111111'})
 				.end(function(err, res) {
 					expect(res.body.error).equal(false);
+					expect(res.body.userData.isManager).equal(true);
 					done();
 				});
 	});

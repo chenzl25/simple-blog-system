@@ -17,15 +17,17 @@ describe('add post', function() {
     Post.collection.drop();
     done();
   });
-  var agent;
+  var agent1;
+  var agent2;
+  var postId;
 	it('should register login successfully', function(done) {
 		chai.request(server)
 				.post('/api/register')
 				.send({account:'111111', password:'111111', name:'haha'})
 				.then((res) => {
 					expect(res.body.error).equal(false);	
-					agent = chai.request.agent(server);
-					agent
+					agent1 = chai.request.agent(server);
+					agent1
 						.post('/api/login')
 						.send({'account':'111111', 'password':'111111'})
 						.then((res) =>{
@@ -37,60 +39,53 @@ describe('add post', function() {
 					done(err);
 				});
 	});
+	it('should register login successfully', function(done) {
+		chai.request(server)
+				.post('/api/register')
+				.send({account:'222222', password:'222222', name:'gagaga'})
+				.then((res) => {
+					expect(res.body.error).equal(false);	
+					agent2 = chai.request.agent(server);
+					agent2
+						.post('/api/login')
+						.send({'account':'222222', 'password':'222222'})
+						.then((res) =>{
+					    // expect(res).to.have.cookie('sessionid');
+					    expect(res.error).equal(false);
+					    done();
+						});
+				}).catch(function(err) {
+					done(err);
+				});
+	});
 	it('should add post successfully', function(done) {
-	 agent.post('/api/post')
+	 agent1.post('/api/post')
 				.send({title: 'happy', content: 'hehe'})
 				.then(
 					(res) => {
 						expect(res.body.error).equal(false);
 						expect(res.body.postData).to.be.a('object');
+						postId = res.body.postData._id;
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
-	}) 
-	it('should add post fail for empty blog content ', function(done) {
-	 agent.post('/api/post')
-				.send({title: 'happy'})
+	})
+	it('should add comment successfully', function(done) {
+	 agent2.post('/api/post/'+postId+'/comment')
+				.send({content: 'commmmmmmmmmmeeeeennnnttt'})
 				.then(
 					(res) => {
-						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog内容为空\n');
+						console.log(res.body);
+						expect(res.body.error).equal(false);
+						expect(res.body.commentData).to.be.a('object');
+						expect(res.body.commentData.content).equal('commmmmmmmmmmeeeeennnnttt');
+						expect(res.body.commentData.ownerAccount).equal('222222');
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
-	}) 
-	it('should add post fail for too long blog title ', function(done) {
-	 agent.post('/api/post')
-				.send({title: 'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'
-												, content: 'sadad'})
-				.then(
-					(res) => {
-						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog标题长度为2-50个字符\n');
-						done();
-					}
-				).catch(function(err) {
-					done(err);
-				});
-	}) 
-	it('should add post fail for too short blog title ', function(done) {
-	 agent.post('/api/post')
-				.send({title: '1' , content: 'sadad'})
-				.then(
-					(res) => {
-						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog标题长度为2-50个字符\n');
-						done();
-					}
-				).catch(function(err) {
-					done(err);
-				});
-	}) 
+	})
 });

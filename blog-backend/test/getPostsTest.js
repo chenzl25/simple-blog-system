@@ -64,6 +64,7 @@ describe('get posts', function() {
 					.then(
 						(res) => {
 							expect(res.body.error).equal(false);
+							console.log(res.body);
 							expect(res.body.postsData).to.be.a('array');
 							expect(res.body.postsData).to.have.length(2);
 							done();

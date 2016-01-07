@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var crypto = require('crypto');
+var tools = require('../lib/tools');
 var Post = require('./Post');
 var debug = require('debug')('api:User');
 ObjectId = mongoose.Schema.Types.ObjectId;
@@ -9,15 +10,15 @@ var CommentSchema = new mongoose.Schema({
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Date,default: Date.now},
+    lastModified: {type:Number,default: Date.now()},
 });
 var PostSchema = new mongoose.Schema({
     title: {type: String, default: null},
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Date,default: Date.now},
-    comment: [CommentSchema]
+    lastModified: {type:Number,default: Date.now()},
+    comments: [CommentSchema]
 });
 
 //parent Schema
@@ -39,26 +40,27 @@ UserSchema.methods.speak = function () {
 };
 
 //static methods 
-UserSchema.statics.register = function (account, password, name) {
+UserSchema.statics.register = function (account, password, name, beManager) {
     var promise
     = this.find({account:account})
           .count()
-          .exec().then(
+          .then(
             (number) => {
               if (number === 0) {
                 var hashedPassword = crypto.createHash('sha1')
                                           .update(password)
                                           .digest('base64');
                 var user = User({account: account, password: hashedPassword, name: name});
-                user.save(this.invalidDataHandler);
+                if (beManager) {
+                  user.isManager = true;
+                }
+                user.save(tools.invalidDataHandler);
                 return Promise.resolve('注册成功');
               } else {
                 return Promise.reject('账号已被注册');
               }
             },
-            (err) => {
-              return Promise.reject(err);
-            }
+            (err) => Promise.reject(err.message)
           );
     return promise;
 };
@@ -68,16 +70,14 @@ UserSchema.statics.login = function (account, password) {
                                  .digest('base64');
     var promise
     = this.findOne({account:account, password: hashedPassword}, {password:0})
-          .exec().then(
+          .then(
             (userData) => {
               if (!userData) {
                 return Promise.reject('账号或密码错误');
               }
               return Promise.resolve(userData);
             },
-            (err) => {
-              return Promise.reject(err);
-            }
+            (err) => Promise.reject(err.message)
           );
     return promise;
 };
@@ -85,7 +85,7 @@ UserSchema.statics.addPost = function (account, title, content) {
   var that = this;
   var promise
     = this.findOne({account:account})
-          .exec().then(
+          .then(
             (userData) => {
               if (!userData) {
                 return Promise.reject('没有该账号');
@@ -96,52 +96,177 @@ UserSchema.statics.addPost = function (account, title, content) {
               newPost.content = content;
               userData.posts.unshift(newPost);
               return userData.save().then(
-                (userData) => {
-                  return Post.addPost(userData.posts[0]);
-                },
-                (err) => {
-                  that.invalidDataHandler(err);
-                }
+                (userData) => Post.addPost(userData.posts[0]),
+                (err) => Promise.reject(err.message)
               );
             },
-            (err) => {
-              return Promise.reject(err);
-            }
+            (err) => Promise.reject(err)
           );
     return promise;
 };
+UserSchema.statics.editPost = function (account, id, title, content) {
+  var that = this;
+  var promise
+    = this.findOne({account:account})
+          .then(
+            (userData) => {
+              if (!userData) {
+                return Promise.reject('没有该账号');
+              }
+              var postData = userData.posts.id(id);
+              if (!postData) {
+                return Promise.reject('没有该blog');
+              }
+              if (postData.isForbidden) {
+                return Promise.reject('该blog已经被禁');
+              }
+              postData.title = title;
+              postData.content = content;
+              postData.lastModified = Date.now();
+              return userData.save().then(
+                (userData) => Post.editPost(postData),
+                (err) => Promise.reject(err.message)
+              );
+            },
+            (err) => Promise.reject(err)
+          );
+    return promise;
+};
+UserSchema.statics.deletePost = function (account, id) {
+  var that = this;
+  var promise
+    = this.findOne({account:account})
+          .then(
+            (userData) => {
+              if (!userData) {
+                return Promise.reject('没有该账号');
+              }
+              var postNeedToDelete = userData.posts.id(id);
+              debug(postNeedToDelete);
+              if (postNeedToDelete) {
+                return Promise.resolve(postNeedToDelete.remove()).then(
+                  (value) => userData.save().then(
+                            (userData) => Post.deletePost(id),
+                            (err) => Promise.reject(err.message)
+                          ),
+                  (err) => Promise.reject(err.message)
+                )
+              } else {
+                return Promise.reject('该blog不存在');
+              }
+            },
+            (err) =>  Promise.reject(err.message)
+          );
+    return promise;
+};
+UserSchema.statics.addComment = function(commentOwnerAccount ,postId, commentContent) {
+  var that = this;
+  return Post.findOne({_id: postId}).then((postData) => that.findOne({account:postData.ownerAccount}))
+                             .then((userData) => {
+                                var postData = userData.posts.id(postId);
+                                if (!postData) {
+                                  return Promise.reject('该blog不存在');
+                                }
+                                if (postData.isForbidden) {
+                                  return Promise.reject('该blog已经被禁');
+                                }
+                                debug(postData);
+                                postData.comments.push({ownerAccount: commentOwnerAccount, content: commentContent});
+                                return userData.save().then(() => postData);
+                             })
+                             .then((postData) => Post.addComment(postId, postData.comments[postData.comments.length -1]),
+                                   (err) => {debug(err);return Promise.reject('添加评论失败');});
+}
+UserSchema.statics.editComment = function(commentOwnerAccount ,postId, commentId, commentContent) {
+  var that = this;
+  return Post.findOne({_id: postId}).then((postData) => that.findOne({account:postData.ownerAccount}))
+                             .then((userData) => {
+                                var postData = userData.posts.id(postId);
+                                if (!postData) {
+                                  return Promise.reject('该blog不存在');
+                                }
+                                debug(postData);
+                                if (postData.isForbidden) {
+                                  return Promise.reject('该blog已经被禁');
+                                }
+                                var commentData = postData.comments.id(commentId);
+                                if (!commentData) {
+                                  return Promise.reject('该评论不存在');
+                                }
+                                if (commentData.ownerAccount !== commentOwnerAccount) {
+                                  return Promise.reject('该评论不属于你');
+                                }
+                                commentData.content = commentContent;
+                                commentData.lastModified = Date.now();
+                                return userData.save().then(() => commentData);
+                             })
+                             .then((commentData) => Post.editComment(postId, commentData),
+                                   (err) => {
+                                    debug(err);
+                                    if (typeof err === 'string') {
+                                      return Promise.reject(err);
+                                    }
+                                    return Promise.reject('修改评论失败');});
+}
+UserSchema.statics.deleteComment = function(commentOwnerAccount ,postId, commentId) {
+  var that = this;
+  return Post.findOne({_id: postId}).then((postData) => that.findOne({account:postData.ownerAccount}))
+                             .then((userData) => {
+                                var postData = userData.posts.id(postId);
+                                if (!postData) {
+                                  return Promise.reject('该blog不存在');
+                                }
+                                debug(postData);
+                                if (postData.isForbidden) {
+                                  return Promise.reject('该blog已经被禁');
+                                }
+                                var commentData = postData.comments.id(commentId);
+                                if (!commentData) {
+                                  return Promise.reject('该评论不存在');
+                                }
+                                if (commentData.ownerAccount !== commentOwnerAccount) {
+                                  return Promise.reject('该评论不属于你');
+                                }
+                                return Promise.resolve(commentData.remove())
+                                              .then(() => userData.save())
+                             })
+                             .then(() => Post.deleteComment(postId, commentId),
+                                   (err) => {
+                                    debug(err);
+                                    if (typeof err === 'string') {
+                                      return Promise.reject(err);
+                                    }
+                                    return Promise.reject('删除评论失败');});
+}
+
 UserSchema.statics.getPosts = function(account) {
   var promise
-    = this.findOne({account:account}, {posts:1})
-          .exec().then(
-            (postsData) => {
-              return Promise.resolve(postsData);
-            },
-            (err) => {
-              return Promise.reject(err);
-            }
-          );
-    return promise;
+  = this.findOne({account:account}, {posts:1})
+        .then(
+          (postsData) =>Promise.resolve(postsData),
+          (err) => Promise.reject(err)
+        );
+  return promise;
 };
 
-function invalidDataHandler (err) {
-    // err is our ValidationError object
-    // err.errors.password is a ValidatorError object
-    if (err) {
-        console.log(err);
-        console.log('Attention!');
-        console.log('--------------the save() failed----------------------');
-        for (var i in err.errors) {
-            console.log(err.errors[i].message); // prints 'Validator "Invalid password" failed for path password with value `grease`'
-            console.log(err.errors[i].kind);  // prints "Invalid password"
-            console.log(err.errors[i].path);  // prints "password"
-            console.log(err.errors[i].value); // prints "vlue of password"
-        }
-        console.log('-----------------------------------------------------');
-    } else {
-        console.log('save successfully');
-    }
+UserSchema.statics.switchForbiddenPost = function(postOwnerAccount, postId) {
+  return this.findOne({account: postOwnerAccount})
+             .then((userData) => {
+               if (!userData) {
+                return Promise.reject('该blog作者不存在');
+               }
+               var postData = userData.posts.id(postId);
+               postData.isForbidden = !postData.isForbidden;
+               return userData.save().then(
+                () => Promise.resolve(postData),
+                (err) => {
+                  debug(err);
+                  return Promise.reject('禁blog改变失败');
+                }
+               )
+             });
 }
+
 
 
 //Model

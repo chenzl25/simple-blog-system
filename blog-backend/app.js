@@ -7,17 +7,15 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
-var db = require('./database/db');
+var tools = require('./lib/tools');
 var config = require('./config');
 var api = require('./routes/api');
-var indexRoute = require('./routes/index');
-db.init(function(err) {
-  if (err) {
-    console.log('database open failed');
-  } else {
-    console.log('database open successfully');
-  }
-});
+var registerLoginRouter = require('./routes/registerLoginRouter');
+var userPostRouter = require('./routes/userPostRouter');
+var managerPostRouter = require('./routes/managerPostRouter');
+var indexRouter = require('./routes/indexRouter');
+
+
 
 var app = express();
 // view engine setup
@@ -44,40 +42,26 @@ app.use(session({
   }),
 }));
 
-app.use('/', indexRoute);
-app.post('/api/register', api.register);
-app.post('/api/login', api.login);
-app.get('/api/posts', checkLoginMiddleware, api.getPosts);
-// app.get('/api/post/:postId', checkLoginMiddleware, api.post);
-app.post('/api/post', checkLoginMiddleware, api.addPost);
-app.post('/api/post/:postId/comment', checkLoginMiddleware, api.addComment);
-app.put('/api/post/:postId', checkLoginMiddleware, api.editPost);
-app.put('/api/post/:postId/comment/:commentId', checkLoginMiddleware, api.editComment);
-app.put('/api/forbidden/post/:postId', checkLoginAndManagerMiddleware, api.forbiddenPost);
-app.put('/api/forbidden/post/:postId/comment/:commentId', checkLoginAndManagerMiddleware, api.forbiddenComment);
-app.delete('/api/post/:postId', checkLoginMiddleware, api.deletePost);
-app.delete('/api/post/:postId/comment/:commentId', checkLoginMiddleware, api.deleteComment);
-app.get('*', indexRoute);
+app.use('/', indexRouter);
+app.use('/api', registerLoginRouter);
+app.use('/Mapi/', managerPostRouter);
+app.use('/api', userPostRouter);
+// app.post('/api/register', api.register);
+// app.post('/api/login', api.login);
+// app.get('/api/posts', tools.checkLoginMiddleware, api.getPosts);
+// // app.get('/api/post/:postId', tools.checkLoginMiddleware, api.getPost);
+// app.post('/api/post', tools.checkLoginMiddleware, api.addPost);
+// app.post('/api/post/:postId/comment', tools.checkLoginMiddleware, api.addComment);
+// app.put('/api/post/:postId', tools.checkLoginMiddleware, api.editPost);
+// app.put('/api/post/:postId/comment/:commentId', tools.checkLoginMiddleware, api.editComment);
+// app.put('/api/forbidden/post/:postId', tools.checkLoginAndManagerMiddleware, api.forbiddenPost);
+// app.put('/api/forbidden/post/:postId/comment/:commentId', tools.checkLoginAndManagerMiddleware, api.forbiddenComment);
+// app.delete('/api/post/:postId', tools.checkLoginMiddleware, api.deletePost);
+// app.delete('/api/post/:postId/comment/:commentId', tools.checkLoginMiddleware, api.deleteComment);
+app.get('*', indexRouter);
 
 
-function checkLoginMiddleware(req, res, next) {
-  if (req.session.userData) {
-    next();
-  } else {
-    res.json({error:true, message: '你还没登陆'});
-  }
-}
-function checkLoginAndManagerMiddleware(req, res, next) {
-  if (req.session.userData) {
-    if (req.session.userData.isManager) {
-      next();
-    } else {
-      res.json({error:true, message: '你权限不够'});
-    }
-  } else {
-    res.json({error:true, message: '你还没登陆'});
-  }
-}
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

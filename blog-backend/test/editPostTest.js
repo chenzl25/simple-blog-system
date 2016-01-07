@@ -18,6 +18,7 @@ describe('add post', function() {
     done();
   });
   var agent;
+  var id;
 	it('should register login successfully', function(done) {
 		chai.request(server)
 				.post('/api/register')
@@ -44,53 +45,81 @@ describe('add post', function() {
 					(res) => {
 						expect(res.body.error).equal(false);
 						expect(res.body.postData).to.be.a('object');
+						id = res.body.postData._id;
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
 	}) 
-	it('should add post fail for empty blog content ', function(done) {
-	 agent.post('/api/post')
-				.send({title: 'happy'})
+	it('should edit post successfully', function(done) {
+	 agent.put('/api/post/'+id)
+				.send({title: '123' , content: '456'})
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						expect(res.body.postData.title).equal('123');
+						expect(res.body.postData.content).equal('456');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	}) 
+	it('should edit post fail for the id do not exists', function(done) {
+	 agent.put('/api/post/'+123)
+				.send({title: '123' , content: '456'})
 				.then(
 					(res) => {
 						expect(res.body.error).equal(true);
+						console.log(res.body.message);
+						expect(res.body.message).equal('没有该blog');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should edit post fail for blog标题为空', function(done) {
+	 agent.put('/api/post/'+id)
+				.send({title: '' , content: '456'})
+				.then(
+					(res) => {
+						expect(res.body.error).equal(true);
+						console.log(res.body.message);
+						expect(res.body.message).equal('blog标题为空\n');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should edit post fail for blog内容为空', function(done) {
+	 agent.put('/api/post/'+id)
+				.send({title: '213' , content: ''})
+				.then(
+					(res) => {
+						expect(res.body.error).equal(true);
+						console.log(res.body.message);
 						expect(res.body.message).equal('blog内容为空\n');
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
-	}) 
-	it('should add post fail for too long blog title ', function(done) {
-	 agent.post('/api/post')
-				.send({title: 'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'
-												, content: 'sadad'})
+	});
+	it('should edit post fail for blog标题为空 and blog内容为空', function(done) {
+	 agent.put('/api/post/'+id)
+				.send({title: '' , content: ''})
 				.then(
 					(res) => {
 						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog标题长度为2-50个字符\n');
+						console.log(res.body.message);
+						expect(res.body.message).equal('blog标题为空\nblog内容为空\n');
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
-	}) 
-	it('should add post fail for too short blog title ', function(done) {
-	 agent.post('/api/post')
-				.send({title: '1' , content: 'sadad'})
-				.then(
-					(res) => {
-						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog标题长度为2-50个字符\n');
-						done();
-					}
-				).catch(function(err) {
-					done(err);
-				});
-	}) 
+	});
 });

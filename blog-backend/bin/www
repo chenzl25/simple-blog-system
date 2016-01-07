@@ -7,12 +7,21 @@
 var app = require('../app');
 var debug = require('debug')('blog-backend:server');
 var http = require('http');
+var config = require('../config');
+var db = require('../database/db');
 
+db.init(false, function(err) {
+  if (err) {
+    console.log('database open failed');
+  } else {
+    console.log('database open successfully');
+  }
+});
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(3000);
+var port = normalizePort(config.port || 3000);
 app.set('port', port);
 
 /**

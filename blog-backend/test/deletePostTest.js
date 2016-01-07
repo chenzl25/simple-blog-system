@@ -18,6 +18,7 @@ describe('add post', function() {
     done();
   });
   var agent;
+  var id;
 	it('should register login successfully', function(done) {
 		chai.request(server)
 				.post('/api/register')
@@ -28,9 +29,12 @@ describe('add post', function() {
 					agent
 						.post('/api/login')
 						.send({'account':'111111', 'password':'111111'})
-						.then((res) =>{
+						.then((res) => {
 					    // expect(res).to.have.cookie('sessionid');
-					    expect(res.error).equal(false);
+					    console.log(res.body);
+					    expect(res.body.error).equal(false);
+					    expect(res.body.userData.posts).to.be.a('array');
+					    expect(res.body.userData.posts).to.has.length(0);
 					    done();
 						});
 				}).catch(function(err) {
@@ -44,49 +48,71 @@ describe('add post', function() {
 					(res) => {
 						expect(res.body.error).equal(false);
 						expect(res.body.postData).to.be.a('object');
+						id = res.body.postData._id;
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should add post successfully', function(done) {
+	 agent.post('/api/post')
+				.send({title: 'happy', content: 'hehe'})
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						expect(res.body.postData).to.be.a('object');
+						id = res.body.postData._id;
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should get posts of length 2', function(done) {
+	 agent.get('/api/posts')
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						expect(res.body.postsData).to.be.a('array');
+						expect(res.body.postsData).to.have.length(2);
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
 	}) 
-	it('should add post fail for empty blog content ', function(done) {
-	 agent.post('/api/post')
-				.send({title: 'happy'})
+	it('should delete post successfully', function(done) {
+	 agent.delete('/api/post/'+id)
 				.then(
 					(res) => {
-						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog内容为空\n');
+						expect(res.body.error).equal(false);
+						expect(res.body.message).equal('成功删除blog');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should get posts of length 0', function(done) {
+	 agent.get('/api/posts')
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						expect(res.body.postsData).to.be.a('array');
+						expect(res.body.postsData).to.have.length(1);
 						done();
 					}
 				).catch(function(err) {
 					done(err);
 				});
 	}) 
-	it('should add post fail for too long blog title ', function(done) {
-	 agent.post('/api/post')
-				.send({title: 'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'+
-											'happyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappyhappy'
-												, content: 'sadad'})
+	it('should delete post fail', function(done) {
+	 agent.delete('/api/post/'+id+1)
 				.then(
 					(res) => {
 						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog标题长度为2-50个字符\n');
-						done();
-					}
-				).catch(function(err) {
-					done(err);
-				});
-	}) 
-	it('should add post fail for too short blog title ', function(done) {
-	 agent.post('/api/post')
-				.send({title: '1' , content: 'sadad'})
-				.then(
-					(res) => {
-						expect(res.body.error).equal(true);
-						expect(res.body.message).equal('blog标题长度为2-50个字符\n');
+						expect(res.body.message).equal('该blog不存在');
 						done();
 					}
 				).catch(function(err) {

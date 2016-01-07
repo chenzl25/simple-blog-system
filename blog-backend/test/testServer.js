@@ -7,7 +7,17 @@
 var app = require('../app');
 var debug = require('debug')('blog-backend:test');
 var http = require('http');
+var config = require('../config');
 
+var db = require('../database/db');
+
+db.init(true, function(err) {
+  if (err) {
+    console.log('database open failed');
+  } else {
+    console.log('database open successfully');
+  }
+});
 /**
  * Get port from environment and store in Express.
  */

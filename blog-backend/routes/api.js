@@ -47,24 +47,7 @@ module.exports.login = function(req, res) {
   }
 };
 
-module.exports.login = function(req, res) {
-  debug(req.body);
-  res.setHeader('Content-type','application/json');
-  var validateResult = validator.validateLogin(req.body);
-  if (validateResult) {
-    res.json({error: true, message: validateResult});
-  } else {
-    User.login(req.body.account, req.body.password).then(
-      (userData) => {
-        req.session.userData = userData;
-        res.json({error: false, userData: userData});
-      },
-      (errorMessage) => {
-        res.json({error: true, message: errorMessage});
-      }
-    );
-  }
-};
+
 module.exports.addPost = function(req, res) {
   debug(req.body);
   res.setHeader('Content-type','application/json');
@@ -95,11 +78,26 @@ module.exports.getPosts = function(req, res) {
     }
   );
 };
-module.exports.post = function(req, res) {
+module.exports.getPost = function(req, res) {
 
 };
 module.exports.editPost = function(req, res) {
-
+  debug(req.body);
+  res.setHeader('Content-type','application/json');
+  var validateResult = validator.validatePost(req.body);
+  if (validateResult) {
+    res.json({error: true, message: validateResult});
+  } else {
+    User.addPost(req.session.userData.account, req.body.title, req.body.content).then(
+      (postData) => {
+        debug(postData);
+        res.json({error: false, postData: postData});
+      },
+      (errorMessage) => {
+        res.json({error: true, message: errorMessage});
+      }
+    );
+  }
 };
 module.exports.deletePost = function(req, res) {
 
