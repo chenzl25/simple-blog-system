@@ -13,7 +13,7 @@ var mocha = require('gulp-mocha');
     // streamify = require('gulp-streamify');
 var srcPath = {
   allScript : ['./bin/www', './routes/*.js', './lib/*js', './app.js', './database/*js', './config.js', './test/*.js'],
-  test: './test/*',
+  test: './test',
 }
 // Scripts
 gulp.task('jshint', function() {

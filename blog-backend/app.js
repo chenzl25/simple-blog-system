@@ -28,6 +28,8 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+console.log(path.join(__dirname, '..', 'src'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
@@ -44,7 +46,7 @@ app.use(session({
 
 app.use('/', indexRouter);
 app.use('/api', registerLoginRouter);
-app.use('/Mapi/', managerPostRouter);
+app.use('/Mapi', managerPostRouter);
 app.use('/api', userPostRouter);
 // app.post('/api/register', api.register);
 // app.post('/api/login', api.login);

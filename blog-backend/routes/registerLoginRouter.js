@@ -2,7 +2,7 @@
 var path = require('path');
 var crypto = require('crypto');
 //middleware
-var debug = require('debug')('api:manager');
+var debug = require('debug')('api:registerLogin');
 //self
 var tools = require('../lib/tools');
 var validator = require('../lib/validator');
@@ -30,6 +30,7 @@ router.post('/register', tools.validateMiddleware(validator.validateRegister.bin
 
 router.post('/login', tools.validateMiddleware(validator.validateLogin.bind(validator)), function login(req, res) {
   // res.setHeader('Content-type','application/json');
+  debug(req.body);
   User.login(req.body.account, req.body.password).then(
     (userData) => {
   		debug(userData);
