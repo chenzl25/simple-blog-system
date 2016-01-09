@@ -8,7 +8,7 @@ var CommentSchema = new mongoose.Schema({
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Number,default: Date.now()},
+    lastModified: {type:Number,default: Date.now},
 });
 
 //parent Schema
@@ -17,7 +17,7 @@ var PostSchema = new mongoose.Schema({
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Number,default: Date.now()},
+    lastModified: {type:Number,default: Date.now},
     comments: [CommentSchema]
 });
 PostSchema.set('autoIndex', true);
@@ -28,21 +28,42 @@ PostSchema.methods.speak = function () {
   console.log(this.name);
 };
 
+// global function
+function detectPostExist (postData) {
+  return postData? Promise.resolve(postData) : Promise.reject('该blog不存在');
+}
+function detectCommentExist (commentData) {
+  return commentData? Promise.resolve(commentData) : Promise.reject('该评论不存在');
+}
 //static methods 
-
+PostSchema.statics.findPostById = function(postId) {
+  return this.findOne({_id: postId})
+             .then(detectPostExist, (err) => {
+                debug(err);
+                return Promise.reject('该blog不存在');
+             });
+}
+PostSchema.statics.findCommentById = function(postId, commentId) {
+  return this.findPostById(postId)
+             .then(postData => postData.comments.id(commentId))
+             .then(detectCommentExist, (err) => {
+                debug(err);
+                return Promise.reject('该评论不存在');
+             })
+}
 PostSchema.statics.addPost = function(post) {
   var newPost = Post(post);
   return newPost.save().then(
     postData => Promise.resolve(postData),
     err => Promise.reject(err.message)
-  )
+  );
 };
 
 PostSchema.statics.getPosts = function() {
   var promise
   = this.find()
         .then(
-          (postsData) => Promise.resolve(forbiddenFilter(postsData)),
+          (postsData) => Promise.resolve(forbiddenFilter(postsData).sort((a,b) => a.lastModified < b.lastModified)),
           (err) => Promise.reject(err.message)
         );
   return promise;
@@ -128,6 +149,23 @@ PostSchema.statics.switchForbiddenPost = function(postId) {
     }
   )
 }
+PostSchema.statics.switchForbiddenComment = function(postId, commentId) {
+  var outsideComment;
+  return Promise.all([this.findPostById(postId), this.findCommentById(postId, commentId)])
+                .then(values => {
+                   var commentData = values[0].comments.id(values[1]._id);
+                   commentData.isForbidden = !commentData.isForbidden;
+                   outsideComment = commentData;
+                   debug(commentData);
+                   return values[0].save().then(postData => postData);
+                })
+                .then((postData) => {debug(postData.comments,'!!');return outsideComment},
+                      (err) => {
+                        debug(err);
+                        return Promise.reject('禁评论改变失败')
+                      })
+}
+
 function forbiddenFilter(postsDatas) {
   return postsDatas.map((postData) => {
     if (postData.isForbidden) {

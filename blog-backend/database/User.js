@@ -10,14 +10,14 @@ var CommentSchema = new mongoose.Schema({
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Number,default: Date.now()},
+    lastModified: {type:Number,default: Date.now},
 });
 var PostSchema = new mongoose.Schema({
     title: {type: String, default: null},
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Number,default: Date.now()},
+    lastModified: {type:Number,default: Date.now},
     comments: [CommentSchema]
 });
 
@@ -38,8 +38,43 @@ CommentSchema.set('autoIndex', false);
 UserSchema.methods.speak = function () {
   console.log(this.name);
 };
+//global function
+function detectUserExist (userData) {
+  debug(userData);
+  return userData? Promise.resolve(userData) : Promise.reject('该用户不存在');
+}
+function detectPostExist (postData) {
+  return postData? Promise.resolve(postData) : Promise.reject('该blog不存在');
+}
+function detectCommentExist (commentData) {
+  return commentData? Promise.resolve(commentData) : Promise.reject('该评论不存在');
+}
 
-//static methods 
+//static methods
+UserSchema.statics.findUserByAccount = function(userAccount) {
+  debug(userAccount);
+  return this.findOne({account: userAccount})
+             .then(detectUserExist, (err) => {
+               debug(err);
+               return Promise.reject('该用户不存在')
+             });
+}
+
+PostSchema.statics.findPostById = function(postId) {
+  return this.findOne({_id: PostId})
+             .then(detectPostExist, (err) => {
+                debug(err);
+                return Promise.reject('该blog不存在');
+             });
+}
+PostSchema.statics.findCommentById = function(postId, commentId) {
+  return this.findPostById(postId)
+             .then(postData => postsData.comments.id(commentId))
+             .then(detectCommentExist, (err) => {
+                debug(err);
+                return Promise.reject('该评论不存在');
+             })
+}
 UserSchema.statics.register = function (account, password, name, beManager) {
     var promise
     = this.find({account:account})
@@ -75,6 +110,7 @@ UserSchema.statics.login = function (account, password) {
               if (!userData) {
                 return Promise.reject('账号或密码错误');
               }
+              userData.posts = forbiddenFilter(userData.posts);
               return Promise.resolve(userData);
             },
             (err) => Promise.reject(err.message)
@@ -167,9 +203,9 @@ UserSchema.statics.addComment = function(commentOwnerAccount ,postId, commentCon
                                 if (!postData) {
                                   return Promise.reject('该blog不存在');
                                 }
-                                if (postData.isForbidden) {
-                                  return Promise.reject('该blog已经被禁');
-                                }
+                                // if (postData.isForbidden) {
+                                //   return Promise.reject('该blog已经被禁');
+                                // }
                                 debug(postData);
                                 postData.comments.push({ownerAccount: commentOwnerAccount, content: commentContent});
                                 return userData.save().then(() => postData);
@@ -260,8 +296,36 @@ UserSchema.statics.switchForbiddenPost = function(postOwnerAccount, postId) {
                )
              });
 }
+UserSchema.statics.switchForbiddenComment = function(userAccount, postId, commentId) {
+  var outsideUserData;
+  return this.findUserByAccount(userAccount)
+             .then(userData => {outsideUserData = userData; return userData.posts.id(postId)})
+             .then(detectPostExist)
+             .then(postData => postData.comments.id(commentId))
+             .then(detectCommentExist)
+             .then(commentData => {
+               commentData.isForbidden = !commentData.isForbidden;
+               return outsideUserData.save().then(() => commentData);
+             })
+             .then((commentData) => commentData,
+                   (err) => {debug(err);throw '禁评论改变失败'});
+}
 
-
+function forbiddenFilter(postsDatas) {
+  return postsDatas.map((postData) => {
+    if (postData.isForbidden) {
+      postData.title = '';
+      postData.content = '';
+    }
+    postData.comments = postData.comments.map((commentData) => {
+      if (commentData.isForbidden) {
+        commentData.content = '';
+      }
+      return commentData;
+    })
+    return postData;
+  })
+}
 
 //Model
 var User = mongoose.model('User', UserSchema);

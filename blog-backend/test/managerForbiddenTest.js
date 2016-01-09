@@ -34,8 +34,8 @@ describe('Manager: Register, Login and Post:', function() {
 						.send({'account':'111111', 'password':'111111'})
 						.then((res) =>{
 						// expect(res).to.have.cookie('sessionid');
-						expect(res.error).equal(false);
-						done();
+							expect(res.body.error).equal(false);
+							done();
 						});
 				}).catch(function(err) {
 					done(err);
@@ -180,10 +180,126 @@ describe('Manager: Register, Login and Post:', function() {
 						// console.log(res.body.postsData);
 						expect(res.body.postsData).to.be.a('array');
 						expect(res.body.postsData).to.has.length(2);
-						expect(res.body.postsData[1].isForbidden).equal(true);
-						expect(res.body.postsData[1].title).equal('');
-						expect(res.body.postsData[1].content).equal('');
-						console.log(res.body.postsData[1].comments);
+						expect(res.body.postsData[0].isForbidden).equal(true);
+						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].content).equal('');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should forbidden the comment successfully', function(done) {
+	 agentManager.put('/Mapi/post/'+postId+'/comment/'+commentId)
+				.then(
+					(res) => {
+						// console.log(res.body)
+						expect(res.body.error).equal(false);
+						expect(res.body.message).equal('禁评论改变成功');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should show the get posts have been forbidden and the comment has been forbidden', function(done) {
+	 agentUser.get('/api/posts')
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						// console.log(res.body.postsData);
+						expect(res.body.postsData).to.be.a('array');
+						expect(res.body.postsData).to.has.length(2);
+						expect(res.body.postsData[0].isForbidden).equal(true);
+						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].content).equal('');
+						// console.log(res.body.postsData[0].comments);
+						expect(res.body.postsData[0].comments[1].isForbidden).equal(true);
+						expect(res.body.postsData[0].comments[1].content).equal('');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should add comment successfully', function(done) {
+	 agentUser.post('/api/post/'+postId+'/comment')
+				.send({content: 'hahahah'})
+				.then(
+					(res) => {
+						// console.log(res.body);
+						expect(res.body.error).equal(false);
+						expect(res.body.commentData).to.be.a('object');
+						expect(res.body.commentData.content).equal('hahahah');
+						expect(res.body.commentData.ownerAccount).equal('222222');
+						res.body.commentData._id;
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should show the get posts have been forbidden and the comment has been forbidden', function(done) {
+	 agentUser.get('/api/posts')
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						// console.log(res.body.postsData);
+						expect(res.body.postsData).to.be.a('array');
+						expect(res.body.postsData).to.has.length(2);
+						expect(res.body.postsData[0].isForbidden).equal(true);
+						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].content).equal('');
+						// console.log(res.body.postsData[0].comments);
+						expect(res.body.postsData[0].comments).to.have.length(3);
+						expect(res.body.postsData[0].comments[1].isForbidden).equal(true);
+						expect(res.body.postsData[0].comments[1].content).equal('');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('login should find the user posts have been forbidden', function(done) {
+		agentUser
+			.post('/api/login')
+			.send({'account':'222222', 'password':'222222'})
+			.then((res) =>{
+				expect(res.body.error).equal(false);
+				expect(res.body.userData.posts[0].comments[1].isForbidden).equal(true);
+				expect(res.body.userData.posts[0].comments[1].content).equal('');
+				console.log(res.body.userData.posts[0].comments[1].content);
+				done();
+			}).catch(err => done(err));
+	});
+	it('should cancel the forbidden comment successfully', function(done) {
+	 agentManager.put('/Mapi/post/'+postId+'/comment/'+commentId)
+				.then(
+					(res) => {
+						console.log(res.body)
+						expect(res.body.error).equal(false);
+						expect(res.body.message).equal('禁评论改变成功');
+						done();
+					}
+				).catch(function(err) {
+					done(err);
+				});
+	});
+	it('should show the get posts have been forbidden and the comment has been forbidden', function(done) {
+	 agentUser.get('/api/posts')
+				.then(
+					(res) => {
+						expect(res.body.error).equal(false);
+						// console.log(res.body.postsData);
+						expect(res.body.postsData).to.be.a('array');
+						expect(res.body.postsData).to.has.length(2);
+						expect(res.body.postsData[0].isForbidden).equal(true);
+						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].content).equal('');
+						// console.log(res.body.postsData[0].comments);
+						expect(res.body.postsData[0].comments).to.have.length(3);
+						expect(res.body.postsData[0].comments[1].isForbidden).equal(false);
+						expect(res.body.postsData[0].comments[1].content).equal('commmmmmmeennnnttt');
 						done();
 					}
 				).catch(function(err) {

@@ -37,7 +37,12 @@ router.put('/post/:postId', function switchForbiddenPost(req, res) {
 		
 });
 router.put('/post/:postId/comment/:commentId', function switchForbiddenComment(req, res) {
-
+	Promise.all([Post.findPostById(req.params.postId), Post.switchForbiddenComment(req.params.postId, req.params.commentId)])
+	 		.then((values) => {debug(values,'**********');return User.switchForbiddenComment(values[0].ownerAccount, req.params.postId, req.params.commentId)})
+	 		.then(
+	 			() => res.json({error: false, message: '禁评论改变成功'}),
+	 			(errorMessage) => res.json({error: true, message: errorMessage})
+	 		);
 })
 
 module.exports = router;
