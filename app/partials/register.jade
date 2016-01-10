@@ -1,4 +1,9 @@
-a(href="#login")  Go to Login
+nav
+  ul
+    li 
+      a(href="#login") 登陆
+    li   
+      a(href="#register")  注册
 div#register-form-container
   form#register-form
     fieldset
@@ -12,11 +17,13 @@ div#register-form-container
         input(ng-model="password", id="password", type="password", name="password", placeholder="password")
       div.again-container
         label(for="again", class="attribute-name")
-        input(ng-model="again", id="again", type="password", name="again", placeholder="again")
+        input(ng-model="again", id="again", type="password", name="again", placeholder="password again")
       div.name-container
         label(for="name", class="attribute-name")
         input(ng-model="name", id="name", type="text", name="name", placeholder="name")
       div.submit-container
-        input(id="submit", type='submit', ng-click="register()")
+        input(id="submit", type='submit',value="register" ng-click="register()")
+      div.submit-container
+        input(id="submit", type='submit',value="super regiseter" ng-click="superRegister()")
       div.message-container
         p(class="message" ng-class="messageClass") {{message}}

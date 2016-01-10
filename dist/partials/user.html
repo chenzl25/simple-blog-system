@@ -1,13 +1,19 @@
-<a href="#home">Go to Home</a>
+
+<nav>
+  <ul>
+    <li> <a href="#home">博客主页</a></li>
+    <li>  <a href="#user">用户主页</a></li>
+  </ul>
+</nav>
 <div id="user-container">
   <div id="user-left-container">
-    <div id="user-profile-container"><span class="user-name">Name: {{userData.name}}</span></div>
+    <div id="user-profile-container"><span class="user-name">用户: {{userData.name}}</span></div>
     <div id="user-posts-container">
       <ul class="user-posts-list">
         <li ng-repeat="postData in userData.posts">
           <div ng-click="enterPostDetail(postData)" class="user-post-container">
             <h1 class="post-title">{{postData.title}}</h1>
-            <p class="post-content">{{postData.content}}</p><span class="post-last-modified">{{postData.lastModified | date}}</span>
+            <p class="post-content">{{postData.content}}</p><span class="post-last-modified">{{postData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span>
           </div>
         </li>
       </ul>

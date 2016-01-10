@@ -1,4 +1,10 @@
-<a href="#register">Go to register</a>
+
+<nav>
+  <ul>
+    <li> <a href="#login">登陆</a></li>
+    <li>  <a href="#register"> 注册</a></li>
+  </ul>
+</nav>
 <div id="login-form-container">
   <form id="login-form">
     <fieldset>
@@ -14,7 +20,7 @@
         <input ng-model="password" id="password" type="password" name="password" placeholder="password"/>
       </div>
       <div class="submit-container">
-        <input id="submit" type="submit" ng-click="login()"/>
+        <input id="submit" type="submit" value="login" ng-click="login()"/>
       </div>
       <div class="message-container">
         <p ng-class="messageClass" class="message">{{message}}</p>

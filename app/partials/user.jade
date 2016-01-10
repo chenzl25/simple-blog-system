@@ -1,15 +1,20 @@
-a(href="#home") Go to Home
+nav
+  ul
+    li 
+      a(href="#home") 博客主页
+    li   
+      a(href="#user") 用户主页
 div#user-container
   div#user-left-container
     div#user-profile-container
-      span.user-name Name: {{userData.name}}
+      span.user-name 用户: {{userData.name}}
     div#user-posts-container
       ul.user-posts-list
         li(ng-repeat="postData in userData.posts")
           div.user-post-container(ng-click="enterPostDetail(postData)")
             h1.post-title {{postData.title}}
             p.post-content {{postData.content}}
-            span.post-last-modified {{postData.lastModified | date}}
+            span.post-last-modified {{postData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}
   div#user-right-container
     div#create-post-container
       form#create-post-form

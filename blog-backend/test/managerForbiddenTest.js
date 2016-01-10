@@ -151,7 +151,7 @@ describe('Manager: Register, Login and Post:', function() {
 				.then(
 					(res) => {
 						expect(res.body.error).equal(false);
-						expect(res.body.message).equal('禁blog改变成功');
+						expect(res.body.postData.title).equal('该blog已经被管理员禁了');
 						done();
 					}
 				).catch(function(err) {
@@ -181,7 +181,7 @@ describe('Manager: Register, Login and Post:', function() {
 						expect(res.body.postsData).to.be.a('array');
 						expect(res.body.postsData).to.has.length(2);
 						expect(res.body.postsData[0].isForbidden).equal(true);
-						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].title).equal('该blog已经被管理员禁了');
 						expect(res.body.postsData[0].content).equal('');
 						done();
 					}
@@ -195,7 +195,7 @@ describe('Manager: Register, Login and Post:', function() {
 					(res) => {
 						// console.log(res.body)
 						expect(res.body.error).equal(false);
-						expect(res.body.message).equal('禁评论改变成功');
+						expect(res.body.commentData.content).equal('该评论已经被管理员禁了');
 						done();
 					}
 				).catch(function(err) {
@@ -211,11 +211,11 @@ describe('Manager: Register, Login and Post:', function() {
 						expect(res.body.postsData).to.be.a('array');
 						expect(res.body.postsData).to.has.length(2);
 						expect(res.body.postsData[0].isForbidden).equal(true);
-						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].title).equal('该blog已经被管理员禁了');
 						expect(res.body.postsData[0].content).equal('');
 						// console.log(res.body.postsData[0].comments);
 						expect(res.body.postsData[0].comments[1].isForbidden).equal(true);
-						expect(res.body.postsData[0].comments[1].content).equal('');
+						expect(res.body.postsData[0].comments[1].content).equal('该评论已经被管理员禁了');
 						done();
 					}
 				).catch(function(err) {
@@ -248,12 +248,12 @@ describe('Manager: Register, Login and Post:', function() {
 						expect(res.body.postsData).to.be.a('array');
 						expect(res.body.postsData).to.has.length(2);
 						expect(res.body.postsData[0].isForbidden).equal(true);
-						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].title).equal('该blog已经被管理员禁了');
 						expect(res.body.postsData[0].content).equal('');
 						// console.log(res.body.postsData[0].comments);
 						expect(res.body.postsData[0].comments).to.have.length(3);
 						expect(res.body.postsData[0].comments[1].isForbidden).equal(true);
-						expect(res.body.postsData[0].comments[1].content).equal('');
+						expect(res.body.postsData[0].comments[1].content).equal('该评论已经被管理员禁了');
 						done();
 					}
 				).catch(function(err) {
@@ -267,7 +267,7 @@ describe('Manager: Register, Login and Post:', function() {
 			.then((res) =>{
 				expect(res.body.error).equal(false);
 				expect(res.body.userData.posts[0].comments[1].isForbidden).equal(true);
-				expect(res.body.userData.posts[0].comments[1].content).equal('');
+				expect(res.body.userData.posts[0].comments[1].content).equal('该评论已经被管理员禁了');
 				console.log(res.body.userData.posts[0].comments[1].content);
 				done();
 			}).catch(err => done(err));
@@ -278,7 +278,7 @@ describe('Manager: Register, Login and Post:', function() {
 					(res) => {
 						console.log(res.body)
 						expect(res.body.error).equal(false);
-						expect(res.body.message).equal('禁评论改变成功');
+						expect(res.body.commentData.content).not.equal('该评论已经被管理员禁了');
 						done();
 					}
 				).catch(function(err) {
@@ -294,7 +294,7 @@ describe('Manager: Register, Login and Post:', function() {
 						expect(res.body.postsData).to.be.a('array');
 						expect(res.body.postsData).to.has.length(2);
 						expect(res.body.postsData[0].isForbidden).equal(true);
-						expect(res.body.postsData[0].title).equal('');
+						expect(res.body.postsData[0].title).equal('该blog已经被管理员禁了');
 						expect(res.body.postsData[0].content).equal('');
 						// console.log(res.body.postsData[0].comments);
 						expect(res.body.postsData[0].comments).to.have.length(3);

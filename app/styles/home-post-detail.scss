@@ -15,13 +15,6 @@
     }
   }
   #comments-container {
-// div#comments-container
-//     ul.comments-list
-//       li(ng-repeat="commentData in postData.comments")
-//         div.comment-container
-//           p.comment-content {{commentData.content}}
-//           span.comment-owner-name {{commentData.ownerName}}
-//           span.comment-last-modified {{commentData.lastModified | date}}last-modified {{commentData.lastModified | date}}
     .comments-list {
       list-style: none;
       .comment-container {
@@ -35,7 +28,7 @@
           .comment-owner-name,
           .comment-last-modified {
             display: block;
-            margin-left: 650px;
+            margin-left: 600px;
           }
         }
       }

@@ -171,12 +171,12 @@ PostSchema.statics.switchForbiddenComment = function(postId, commentId) {
 function forbiddenFilter(postsDatas) {
   return postsDatas.map((postData) => {
     if (postData.isForbidden) {
-      postData.title = '';
+      postData.title = '该blog已经被管理员禁了';
       postData.content = '';
     }
     postData.comments = postData.comments.map((commentData) => {
       if (commentData.isForbidden) {
-        commentData.content = '';
+        commentData.content = '该评论已经被管理员禁了';
       }
       return commentData;
     })

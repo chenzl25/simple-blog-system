@@ -1,4 +1,9 @@
-a(href="#home") Home
+nav
+  ul
+    li 
+      a(href="#home") 博客主页
+    li   
+      a(href="#user") 用户主页
 div#post-container
   div#post-profile-container
     span.post-title {{postData.title}}
@@ -10,7 +15,7 @@ div#post-container
           p.comment-content {{commentData.content}}
           div#comments-bottom-container
             span.comment-owner-name {{commentData.ownerName}}
-            span.comment-last-modified {{commentData.lastModified | date}}
+            span.comment-last-modified {{commentData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}
   div#create-comment-container
       form#create-comment-form
         fieldset

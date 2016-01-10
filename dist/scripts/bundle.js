@@ -86,6 +86,14 @@ blogApp.config(['$routeProvider',
         templateUrl: './partials/home-post-detail.html',
         controller: 'homePostDetailCtrl'
       }).
+      when('/manager', {
+        templateUrl: './partials/manager.html',
+        controller: 'managerCtrl'
+      }).
+      when('/manager/:postId', {
+        templateUrl: './partials/manager-post-detail.html',
+        controller: 'managerPostDetailCtrl'
+      }).
       otherwise({
         redirectTo: '/login'
       });
@@ -113,11 +121,20 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
             $scope.messageClass = 'success';
             $scope.message = '';
             $rootScope.userData = data.userData;
-            $location.url('/user');
+            if (data.userData.isManager) {
+              $location.url('/manager');
+            } else {
+              $location.url('/user');
+            }
           }
         });
       }
     }
+    //*****************************
+    // $scope.account = 'manager';
+    // $scope.password = 'manager';
+    // $scope.login();
+    //*****************************
   }]);
 blogControllers.controller('registerCtrl', ['$scope','$http','validator',
   function($scope, $http, validator ) {
@@ -137,7 +154,26 @@ blogControllers.controller('registerCtrl', ['$scope','$http','validator',
         $scope.message = validateResult;
       } else {
         $http.post('/proxy/api/register', {account:$scope.account,password:$scope.password,name:$scope.name}).success(function(data) {
-          alert(data.message, data.error)
+          if (data.error) {
+            $scope.messageClass = 'warning';
+            $scope.message = data.message;
+          } else {
+            $scope.messageClass = 'success';
+            $scope.message = data.message;
+          }
+        });
+      }
+    }
+    $scope.superRegister = function() {
+      var validateResult = validator.validateRegister({account: $scope.account, password: $scope.password, name: $scope.name});
+      if ($scope.password !== $scope.again) {
+        validateResult += '两次输入密码不相同\n';
+      }
+      if (validateResult) {
+        $scope.messageClass = 'warning';
+        $scope.message = validateResult;
+      } else {
+        $http.post('/proxy/Mapi/register', {account:$scope.account,password:$scope.password,name:$scope.name}).success(function(data) {
           if (data.error) {
             $scope.messageClass = 'warning';
             $scope.message = data.message;
@@ -152,10 +188,9 @@ blogControllers.controller('registerCtrl', ['$scope','$http','validator',
 
 blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope','$location',
   function($scope, $http, validator, $rootScope, $location) {
-    // $scope.userData = $rootScope.userData;  
-    $http.post('/proxy/api/login', {account:'14331048',password:'14331048'}).success(function(data) {
-      $rootScope.userData = data.userData;
-    });
+    if (!$rootScope.userData) {
+      $location.url('/login');
+    }
     $scope.enterPostDetail = function(postData) {
       $rootScope.postData = postData;
       $location.url('/user/'+postData._id);
@@ -179,6 +214,8 @@ blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope
             $scope.messageClass = 'success';
             $scope.message = '';
             $rootScope.userData.posts.unshift(data.postData);
+            $scope.title = '';
+            $scope.content = '';
           }
         });
       }
@@ -188,10 +225,11 @@ blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope
 
 blogControllers.controller('userPostDetailCtrl', ['$scope','$http','validator','$rootScope','$location','$routeParams',
   function($scope, $http, validator, $rootScope, $location,$routeParams) {
-    $http.get('/proxy/api/posts').success(function(data) {
-      $rootScope.postsData = data.postsData;
-      $rootScope.postData = data.postsData[2];
-    });
+    if (!$rootScope.userData) {
+      $location.url('/login');
+    }
+    $scope.beforeTitle = $rootScope.postData.title;
+    $scope.beforeContent = $rootScope.postData.content;
     $scope.content = '';
     $scope.createComment = function () {
       var validateResult = validator.validateComment({content: $scope.content});
@@ -207,6 +245,7 @@ blogControllers.controller('userPostDetailCtrl', ['$scope','$http','validator','
             $scope.messageClass = 'success';
             $scope.message = '';
             $rootScope.postData.comments.push(data.commentData);
+            $scope.content = '';
           }
         });
       }
@@ -216,23 +255,62 @@ blogControllers.controller('userPostDetailCtrl', ['$scope','$http','validator','
     $scope.message = '';
     $scope.editStateHandler = function() {
       $scope.editState = !$scope.editState;
+      $rootScope.postData.title = $scope.beforeTitle;
+      $rootScope.postData.content = $scope.beforeContent;
+
     }
     $scope.editPost = function() {
       var validateResult = validator.validatePost({title: $rootScope.postData.title,content: $rootScope.postData.content});
       if (validateResult) {
-        $scope.messageClass = 'warning';
-        $scope.message = validateResult;
+        $scope.anotherMessageClass = 'warning';
+        $scope.anotherMessage = validateResult;
       } else {
         $http.put('/proxy/api/post/'+$routeParams.postId, {title: $scope.postData.title, content: $scope.postData.content}).success(function(data) {
           if (data.error) {
-            $scope.messageClass = 'warning';
-            $scope.message = data.message;
+            $scope.anotherMessageClass = 'warning';
+            $scope.anotherMessage = data.message;
           } else {
-            $scope.messageClass = 'success';
-            $scope.message = '';
+            $scope.anotherMessageClass = 'success';
+            $scope.anotherMessage = '';
             $scope.editState = false;
             $rootScope.postData = data.postData;
+            $scope.beforeTitle = $rootScope.postData.title;
+            $scope.beforeContent = $rootScope.postData.content;
+            var key = null;
+              $rootScope.userData.posts.find(function(v,k) {
+                if (v._id == $routeParams.postId) {
+                  key = k;
+                }
+              })
+              if (key != null) {
+                $rootScope.userData.posts.splice(key, 1);
+                $rootScope.userData.posts.unshift(data.postData);
+              }
           }
+        });
+      }
+    }
+    $scope.deletePost= function() {
+      if (window.confirm('Sure to delete the Post?')) {
+          $http.delete('/proxy/api/post/'+$routeParams.postId).success(function(data) {
+            if (data.error) {
+              $scope.messageClass = 'warning';
+              $scope.message = data.message;
+            } else {
+              $scope.messageClass = 'success';
+              $scope.message = '';
+              $scope.editState = false;
+              $rootScope.postData = data.postData;
+              var key = null;
+              $rootScope.userData.posts.find(function(v,k) {
+                if (v._id == $routeParams.postId) {
+                  key = k;
+                }
+              })
+              if (key != null)
+                $rootScope.userData.posts.splice(key, 1);
+              $location.url('/user')
+            }
         });
       }
     }
@@ -240,6 +318,9 @@ blogControllers.controller('userPostDetailCtrl', ['$scope','$http','validator','
 
 blogControllers.controller('homeCtrl', ['$scope','$http','validator','$rootScope','$location',
   function($scope, $http, validator, $rootScope, $location) {
+    if (!$rootScope.userData) {
+      $location.url('/login');
+    }
     $http.get('/proxy/api/posts').success(function(data) {
       $rootScope.postsData = data.postsData;
     });
@@ -251,10 +332,9 @@ blogControllers.controller('homeCtrl', ['$scope','$http','validator','$rootScope
 
 blogControllers.controller('homePostDetailCtrl', ['$scope','$http','validator','$rootScope','$location','$routeParams',
   function($scope, $http, validator, $rootScope, $location, $routeParams) {
-    $http.get('/proxy/api/posts').success(function(data) {
-      $rootScope.postsData = data.postsData;
-      $rootScope.postData = data.postsData[2];
-    });
+    if (!$rootScope.userData) {
+      $location.url('/login');
+    }
     $scope.content = '';
     $scope.createComment = function () {
       var validateResult = validator.validateComment({content: $scope.content});
@@ -270,9 +350,75 @@ blogControllers.controller('homePostDetailCtrl', ['$scope','$http','validator','
             $scope.messageClass = 'success';
             $scope.message = '';
             $rootScope.postData.comments.push(data.commentData);
+            $scope.content = '';
           }
         });
       }
+    }
+  }]);
+
+blogControllers.controller('managerCtrl', ['$scope','$http','validator','$rootScope','$location',
+  function($scope, $http, validator, $rootScope, $location) {
+    if (!$rootScope.userData) {
+      $location.url('/login');
+    }
+    $http.get('/proxy/api/posts').success(function(data) {
+      $rootScope.postsData = data.postsData;
+    });
+    $scope.enterPostDetail = function(postData) {
+      $rootScope.postData = postData;
+      $location.url('/manager/'+postData._id);
+    }
+  }]);
+blogControllers.controller('managerPostDetailCtrl', ['$scope','$http','validator','$rootScope','$location','$routeParams',
+  function($scope, $http, validator, $rootScope, $location, $routeParams) {
+    if (!$rootScope.userData) {
+      $location.url('/login');
+    }
+    $scope.postForbiddenSwitch = function() {
+      $http.put('/proxy/Mapi/post/'+$routeParams.postId).success(function(data) {
+        if (data.error) {
+          alert(data.message);
+        } else {
+          console.log(data);
+          // var key = null;
+          // $rootScope.postsData.find(function(v,k) {
+          //   if (v._id === $routeParams.postId) {
+          //     key = k;
+          //   }
+          // });
+          // if (key !== null) {
+          //   $rootScope.postsData[key] = data.postData;
+          // }
+          $rootScope.postData = data.postData;
+        }
+      });
+    }
+    $scope.commentForbiddenSwitch = function(commentId) {
+      $http.put('/proxy/Mapi/post/'+$routeParams.postId+'/comment/' +commentId).success(function(data) {
+        if (data.error) {
+          alert(data.message);
+        } else {
+          // var key = null;
+          // $rootScope.postsData.find(function(v,k) {
+          //   if (v._id === $routeParams.postId) {
+          //     key = k;
+          //   }
+          // });
+          // if (key !== null) {
+          //   $rootScope.postsData[key] = data.postData;
+          // }
+          var key = null;
+          $rootScope.postData.comments.find(function(v,k) {
+            if (v._id === commentId) {
+              key = k;
+            }
+          });
+          if (key !== null) {
+            $rootScope.postData.comments[key] = data.commentData;
+          }
+        }
+      });
     }
   }]);
 

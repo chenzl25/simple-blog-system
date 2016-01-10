@@ -87,7 +87,7 @@ html {
       #post-container #comments-container .comments-list .comment-container #comments-bottom-container .comment-owner-name,
       #post-container #comments-container .comments-list .comment-container #comments-bottom-container .comment-last-modified {
         display: block;
-        margin-left: 650px; }
+        margin-left: 600px; }
 
 #create-comment-container {
   margin-bottom: 50px; }
@@ -153,11 +153,134 @@ div.home-post-container {
     white-space: pre-wrap; }
 
 #post-bottom-container {
-  margin-left: 650px; }
+  margin-left: 600px; }
   #post-bottom-container .post-owner-name {
     display: block; }
   #post-bottom-container .post-last-modified {
     display: block; }
+
+#post-container {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto; }
+  #post-container #post-profile-container {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 5px; }
+    #post-container #post-profile-container span.post-title {
+      font-size: 40px; }
+    #post-container #post-profile-container p.post-content {
+      white-space: pre-wrap;
+      font-size: 18px; }
+  #post-container #comments-container .comments-list {
+    list-style: none; }
+    #post-container #comments-container .comments-list .comment-container {
+      border: 1px solid #eee;
+      padding: 5px; }
+      #post-container #comments-container .comments-list .comment-container p.comment-content {
+        white-space: pre-wrap;
+        font-size: 18px; }
+      #post-container #comments-container .comments-list .comment-container #comments-bottom-container .comment-owner-name,
+      #post-container #comments-container .comments-list .comment-container #comments-bottom-container .comment-last-modified {
+        display: block;
+        margin-left: 600px; }
+
+#create-comment-container {
+  margin-bottom: 50px; }
+
+#create-comment-form {
+  width: 800px; }
+  #create-comment-form legend {
+    font-size: 30px; }
+  #create-comment-form label {
+    display: none; }
+  #create-comment-form input {
+    font-size: 20px;
+    color: white;
+    width: 800px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #create-comment-form textarea {
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #create-comment-form input[type="submit"] {
+    letter-spacing: 2px; }
+    #create-comment-form input[type="submit"]:hover {
+      background: #2287B0;
+      border: 1px #ccc solid; }
+
+.post-forbidden-switch-button,
+.comment-forbidden-switch-button {
+  margin-left: 20px;
+  font-size: 20px;
+  color: white;
+  width: 70px;
+  height: 30px;
+  display: inline-block;
+  outline: none;
+  background: transparent;
+  border: 1px white solid;
+  border-radius: 5px;
+  float: right; }
+  .post-forbidden-switch-button:hover,
+  .comment-forbidden-switch-button:hover {
+    background: #2287B0;
+    border: 1px #ccc solid;
+    cursor: pointer; }
+
+span.manager-name {
+  font-size: 30px; }
+
+#manager-posts-container {
+  margin-left: auto;
+  margin-right: auto;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  border-radius: 5px;
+  width: 800px; }
+
+ul.manager-posts-list {
+  list-style: none; }
+
+div.manager-post-container {
+  padding: 5px;
+  border: 1px solid #eee; }
+  div.manager-post-container:hover {
+    cursor: pointer;
+    background: #2386AF; }
+  div.manager-post-container h1.post-title {
+    font-size: 25px; }
+  div.manager-post-container p.post-content {
+    font-size: 18px;
+    white-space: pre-wrap; }
+
+#post-bottom-container {
+  margin-left: 600px; }
+  #post-bottom-container .post-owner-name {
+    display: block; }
+  #post-bottom-container .post-last-modified {
+    display: block; }
+
+nav {
+  margin-bottom: 5px; }
+  nav ul {
+    list-style: none; }
+    nav ul li {
+      display: inline-block;
+      margin-right: 50px; }
 
 a {
   text-decoration: none;
@@ -233,7 +356,8 @@ p.message {
       background: #2287B0;
       border: 1px #ccc solid; }
 
-.edit-button, .back-button {
+.edit-button, .back-button, .delete-button {
+  margin-left: 20px;
   font-size: 20px;
   color: white;
   width: 70px;
@@ -244,7 +368,7 @@ p.message {
   border: 1px white solid;
   border-radius: 5px;
   float: right; }
-  .edit-button:hover, .back-button:hover {
+  .edit-button:hover, .back-button:hover, .delete-button:hover {
     background: #2287B0;
     border: 1px #ccc solid; }
 
@@ -289,7 +413,7 @@ div.user-post-container {
     font-size: 18px;
     white-space: pre-wrap; }
   div.user-post-container span.post-last-modified {
-    margin-left: 350px; }
+    margin-left: 300px; }
 
 #create-post-form {
   width: 450px; }

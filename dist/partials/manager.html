@@ -1,15 +1,14 @@
 
 <nav>
   <ul>
-    <li> <a href="#home">博客主页</a></li>
-    <li>  <a href="#user">用户主页</a></li>
+    <li> <a href="#manager">博客主页</a></li>
   </ul>
 </nav>
-<div id="home-container">
-  <div id="home-posts-container">
-    <ul class="home-posts-list">
+<div id="manager-container">
+  <div id="manager-posts-container">
+    <ul class="manager-posts-list">
       <li ng-repeat="postData in postsData">
-        <div ng-click="enterPostDetail(postData)" class="home-post-container">
+        <div ng-click="enterPostDetail(postData)" class="manager-post-container">
           <h1 class="post-title">{{postData.title}}</h1>
           <p class="post-content">{{postData.content}}</p>
           <div id="post-bottom-container"><span class="post-owner-name">{{postData.ownerName}}</span><span class="post-last-modified">{{postData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span></div>

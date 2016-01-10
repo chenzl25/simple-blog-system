@@ -1,7 +1,7 @@
-span.home-name {
+span.manager-name {
 	font-size: 30px;
 }
-#home-posts-container {
+#manager-posts-container {
 	margin-left: auto;
 	margin-right: auto;
 	border-top: 1px solid #eee;
@@ -12,10 +12,10 @@ span.home-name {
 	width: 800px;
 
 }
-ul.home-posts-list {
+ul.manager-posts-list {
 	list-style: none;
 }
-div.home-post-container {
+div.manager-post-container {
 	padding: 5px;
 	&:hover {
 		cursor: pointer;
@@ -41,3 +41,4 @@ div.home-post-container {
 	}
  
 }
+

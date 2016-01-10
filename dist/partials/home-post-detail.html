@@ -1,4 +1,10 @@
-<a href="#home">Home</a>
+
+<nav>
+  <ul>
+    <li> <a href="#home">博客主页</a></li>
+    <li>  <a href="#user">用户主页</a></li>
+  </ul>
+</nav>
 <div id="post-container">
   <div id="post-profile-container"><span class="post-title">{{postData.title}}</span>
     <p class="post-content">{{postData.content}}</p>
@@ -8,7 +14,7 @@
       <li ng-repeat="commentData in postData.comments">
         <div class="comment-container">
           <p class="comment-content">{{commentData.content}}</p>
-          <div id="comments-bottom-container"><span class="comment-owner-name">{{commentData.ownerName}}</span><span class="comment-last-modified">{{commentData.lastModified | date}}</span></div>
+          <div id="comments-bottom-container"><span class="comment-owner-name">{{commentData.ownerName}}</span><span class="comment-last-modified">{{commentData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span></div>
         </div>
       </li>
     </ul>

@@ -1,7 +1,14 @@
-<a href="#user">User</a>
+
+<nav>
+  <ul>
+    <li> <a href="#home">博客主页</a></li>
+    <li>  <a href="#user">用户主页</a></li>
+  </ul>
+</nav>
 <div id="post-container">
   <div id="post-profile-container"><span ng-if="!editState" class="post-title">{{postData.title}}</span>
-    <button ng-click="editStateHandler()" ng-if="!editState" class="edit-button">edit</button>
+    <button ng-click="deletePost()" class="delete-button">delete</button>
+    <button ng-click="editStateHandler()" ng-if="!editState&amp;&amp;!postData.isForbidden" class="edit-button">edit</button>
     <button ng-click="editStateHandler()" ng-if="editState" class="back-button">back</button>
     <p ng-if="!editState" class="post-content">{{postData.content}}</p>
     <form id="edit-post-form" ng-if="editState">
@@ -21,7 +28,7 @@
           <input id="submit" type="submit" ng-click="editPost()"/>
         </div>
         <div class="message-container">
-          <p ng-class="messageClass" class="message">{{message}}</p>
+          <p ng-class="anotherMessageClass" class="message">{{anotherMessage}}</p>
         </div>
       </fieldset>
     </form>
@@ -31,23 +38,23 @@
       <li ng-repeat="commentData in postData.comments">
         <div class="comment-container">
           <p class="comment-content">{{commentData.content}}</p>
-          <div id="comments-bottom-container"><span class="comment-owner-name">{{commentData.ownerName}}</span><span class="comment-last-modified">{{commentData.lastModified | date}}</span></div>
+          <div id="comments-bottom-container"><span class="comment-owner-name">{{commentData.ownerName}}</span><span class="comment-last-modified">{{commentData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span></div>
         </div>
       </li>
     </ul>
   </div>
-  <div id="edit-comment-container">
-    <form id="edit-comment-form">
+  <div id="create-comment-container">
+    <form id="create-comment-form">
       <fieldset>
         <div id="legand">
           <legend>Write Comment</legend>
         </div>
         <div class="content-container">
           <label for="content" class="attribute-name"></label>
-          <textarea ng-model="content" id="content" name="content" placeholder="content..." rows="3" cols="95" form="edit-comment-form"></textarea>
+          <textarea ng-model="content" id="content" name="content" placeholder="content..." rows="3" cols="95" form="create-comment-form"></textarea>
         </div>
         <div class="submit-container">
-          <input id="submit" type="submit" ng-click="editComment()"/>
+          <input id="submit" type="submit" ng-click="createComment()"/>
         </div>
         <div class="message-container">
           <p ng-class="messageClass" class="message">{{message}}</p>

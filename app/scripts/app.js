@@ -32,6 +32,14 @@ blogApp.config(['$routeProvider',
         templateUrl: './partials/home-post-detail.html',
         controller: 'homePostDetailCtrl'
       }).
+      when('/manager', {
+        templateUrl: './partials/manager.html',
+        controller: 'managerCtrl'
+      }).
+      when('/manager/:postId', {
+        templateUrl: './partials/manager-post-detail.html',
+        controller: 'managerPostDetailCtrl'
+      }).
       otherwise({
         redirectTo: '/login'
       });

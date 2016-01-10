@@ -1,14 +1,12 @@
 nav
   ul
     li 
-      a(href="#home") 博客主页
-    li   
-      a(href="#user") 用户主页
-div#home-container
-  div#home-posts-container
-    ul.home-posts-list
+      a(href="#manager") 博客主页
+div#manager-container
+  div#manager-posts-container
+    ul.manager-posts-list
       li(ng-repeat="postData in postsData")
-        div.home-post-container(ng-click="enterPostDetail(postData)")
+        div.manager-post-container(ng-click="enterPostDetail(postData)")
           h1.post-title {{postData.title}}
           p.post-content {{postData.content}}
           div#post-bottom-container

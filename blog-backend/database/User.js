@@ -112,7 +112,7 @@ UserSchema.statics.login = function (account, password) {
               if (!userData) {
                 return Promise.reject('账号或密码错误');
               }
-              userData.posts = forbiddenFilter(userData.posts);
+              userData.posts = forbiddenFilter(userData.posts).sort((a,b) => a.lastModified < b.lastModified);
               return Promise.resolve(userData);
             },
             (err) => Promise.reject(err.message)
@@ -291,7 +291,7 @@ UserSchema.statics.switchForbiddenPost = function(postOwnerAccount, postId) {
                var postData = userData.posts.id(postId);
                postData.isForbidden = !postData.isForbidden;
                return userData.save().then(
-                () => Promise.resolve(postData),
+                () => Promise.resolve(postForbiddenFilter(postData)),
                 (err) => {
                   debug(err);
                   return Promise.reject('禁blog改变失败');
@@ -310,26 +310,45 @@ UserSchema.statics.switchForbiddenComment = function(userAccount, postId, commen
                commentData.isForbidden = !commentData.isForbidden;
                return outsideUserData.save().then(() => commentData);
              })
-             .then((commentData) => commentData,
+             .then((commentData) => commentForbiddenFilter(commentData),
                    (err) => {debug(err);throw '禁评论改变失败'});
 }
 
-function forbiddenFilter(postsDatas) {
-  return postsDatas.map((postData) => {
+function forbiddenFilter(postsData) {
+  return postsData.map((postData) => {
     if (postData.isForbidden) {
-      postData.title = '';
+      postData.title = '该blog已经被管理员禁了';
       postData.content = '';
     }
     postData.comments = postData.comments.map((commentData) => {
       if (commentData.isForbidden) {
-        commentData.content = '';
+        commentData.content = '该评论已经被管理员禁了';
       }
       return commentData;
     })
     return postData;
   })
 }
-
+// User is the only way to the outside, so I don't use this in Post.js
+function postForbiddenFilter(postData) {
+  if (postData.isForbidden) {
+    postData.title = '该blog已经被管理员禁了';
+    postData.content = '';
+  }
+  postData.comments = postData.comments.map((commentData) => {
+      if (commentData.isForbidden) {
+        commentData.content = '该评论已经被管理员禁了';
+      }
+      return commentData;
+    })
+  return postData;
+}
+function commentForbiddenFilter(commentData) {
+  if (commentData.isForbidden) {
+    commentData.content = '该评论已经被管理员禁了';
+  }
+  return commentData;
+}
 //Model
 var User = mongoose.model('User', UserSchema);
 

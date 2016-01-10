@@ -1,0 +1,23 @@
+
+<nav>
+  <ul>
+    <li> <a href="#manager">博客主页</a></li>
+  </ul>
+</nav>
+<div id="post-container">
+  <div id="post-profile-container">
+    <button ng-click="postForbiddenSwitch()" class="post-forbidden-switch-button">{{postData.isForbidden ? '解禁': '禁'}} </button><span class="post-title">{{postData.title}}</span>
+    <p class="post-content">{{postData.content}}</p>
+  </div>
+  <div id="comments-container">
+    <ul class="comments-list">
+      <li ng-repeat="commentData in postData.comments">
+        <div class="comment-container">
+          <button ng-click="commentForbiddenSwitch(commentData._id)" class="comment-forbidden-switch-button">{{commentData.isForbidden ? '解禁': '禁'}} </button>
+          <p class="comment-content">{{commentData.content}}</p>
+          <div id="comments-bottom-container"><span class="comment-owner-name">{{commentData.ownerName}}</span><span class="comment-last-modified">{{commentData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
