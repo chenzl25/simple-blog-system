@@ -7,6 +7,7 @@ ObjectId = mongoose.Schema.Types.ObjectId;
 var CommentSchema = new mongoose.Schema({
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
+    ownerName: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
     lastModified: {type:Number,default: Date.now},
 });
@@ -16,6 +17,7 @@ var PostSchema = new mongoose.Schema({
     title: {type: String, default: null},
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
+    ownerName: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
     lastModified: {type:Number,default: Date.now},
     comments: [CommentSchema]

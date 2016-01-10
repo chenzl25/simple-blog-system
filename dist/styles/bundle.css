@@ -1,0 +1,326 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box; }
+
+html {
+  width: 100%;
+  height: 100%;
+  background: #111;
+  background-size: 100%; }
+
+::-webkit-input-placeholder {
+  /* WebKit, Blink, Edge */
+  color: white;
+  opacity: 0.5; }
+
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: white;
+  opacity: 0.5; }
+
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: white;
+  opacity: 0.5; }
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: white;
+  opacity: 0.5; }
+
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  box-sizing: border-box;
+  font-family: My_Gothic;
+  color: #eee; }
+
+@font-face {
+  font-family: My_Gothic;
+  src: url(../fonts/DidactGothic.ttf); }
+
+::-webkit-scrollbar {
+  width: 2px; }
+
+::-webkit-scrollbar-track {
+  background-color: transparent; }
+
+::-webkit-scrollbar-thumb {
+  background-color: #eee; }
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #ccc; }
+
+.warning-list {
+  list-style: none; }
+
+.warning {
+  color: #D8000C;
+  background: transparent; }
+
+.success {
+  color: #4F8A10; }
+
+#post-container {
+  width: 800px;
+  margin-left: auto;
+  margin-right: auto; }
+  #post-container #post-profile-container {
+    border: 1px solid #eee;
+    border-radius: 5px;
+    padding: 5px; }
+    #post-container #post-profile-container span.post-title {
+      font-size: 40px; }
+    #post-container #post-profile-container p.post-content {
+      white-space: pre-wrap;
+      font-size: 18px; }
+  #post-container #comments-container .comments-list {
+    list-style: none; }
+    #post-container #comments-container .comments-list .comment-container {
+      border: 1px solid #eee;
+      padding: 5px; }
+      #post-container #comments-container .comments-list .comment-container p.comment-content {
+        white-space: pre-wrap;
+        font-size: 18px; }
+      #post-container #comments-container .comments-list .comment-container #comments-bottom-container .comment-owner-name,
+      #post-container #comments-container .comments-list .comment-container #comments-bottom-container .comment-last-modified {
+        display: block;
+        margin-left: 650px; }
+
+#create-comment-container {
+  margin-bottom: 50px; }
+
+#create-comment-form {
+  width: 800px; }
+  #create-comment-form legend {
+    font-size: 30px; }
+  #create-comment-form label {
+    display: none; }
+  #create-comment-form input {
+    font-size: 20px;
+    color: white;
+    width: 800px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #create-comment-form textarea {
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #create-comment-form input[type="submit"] {
+    letter-spacing: 2px; }
+    #create-comment-form input[type="submit"]:hover {
+      background: #2287B0;
+      border: 1px #ccc solid; }
+
+span.home-name {
+  font-size: 30px; }
+
+#home-posts-container {
+  margin-left: auto;
+  margin-right: auto;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  border-radius: 5px;
+  width: 800px; }
+
+ul.home-posts-list {
+  list-style: none; }
+
+div.home-post-container {
+  padding: 5px;
+  border: 1px solid #eee; }
+  div.home-post-container:hover {
+    cursor: pointer;
+    background: #2386AF; }
+  div.home-post-container h1.post-title {
+    font-size: 25px; }
+  div.home-post-container p.post-content {
+    font-size: 18px;
+    white-space: pre-wrap; }
+
+#post-bottom-container {
+  margin-left: 650px; }
+  #post-bottom-container .post-owner-name {
+    display: block; }
+  #post-bottom-container .post-last-modified {
+    display: block; }
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 25px; }
+
+#login-form-container, #register-form-container {
+  margin-left: auto;
+  margin-right: auto; }
+
+#register-form, #login-form {
+  width: 350px;
+  margin-top: 100px;
+  margin-left: auto;
+  margin-right: auto; }
+  #register-form legend, #login-form legend {
+    font-size: 50px; }
+  #register-form label, #login-form label {
+    display: none; }
+  #register-form input, #login-form input {
+    font-size: 20px;
+    color: white;
+    width: 350px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #register-form input[type="submit"], #login-form input[type="submit"] {
+    letter-spacing: 2px; }
+    #register-form input[type="submit"]:hover, #login-form input[type="submit"]:hover {
+      background: #2287B0;
+      border: 1px #ccc solid; }
+
+p.message {
+  white-space: pre-wrap; }
+
+#edit-post-form {
+  width: 780px; }
+  #edit-post-form legend {
+    font-size: 30px; }
+  #edit-post-form label {
+    display: none; }
+  #edit-post-form input {
+    font-size: 20px;
+    color: white;
+    width: 780px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #edit-post-form textarea {
+    font-size: 20px;
+    color: white;
+    width: 780px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #edit-post-form input[type="submit"] {
+    letter-spacing: 2px; }
+    #edit-post-form input[type="submit"]:hover {
+      background: #2287B0;
+      border: 1px #ccc solid; }
+
+.edit-button, .back-button {
+  font-size: 20px;
+  color: white;
+  width: 70px;
+  height: 30px;
+  display: inline-block;
+  outline: none;
+  background: transparent;
+  border: 1px white solid;
+  border-radius: 5px;
+  float: right; }
+  .edit-button:hover, .back-button:hover {
+    background: #2287B0;
+    border: 1px #ccc solid; }
+
+#user-container {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  content-justify: space betweem; }
+  #user-container #user-left-container, #user-container #user-right-container {
+    -webkit-flex: 1 1 0;
+        -ms-flex: 1 1 0;
+            flex: 1 1 0; }
+
+span.user-name {
+  font-size: 30px; }
+
+#user-posts-container {
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
+  border-radius: 5px;
+  height: 500px;
+  overflow: auto;
+  width: 500px;
+  margin-left: 10px;
+  margin-top: 10px; }
+
+ul.user-posts-list {
+  list-style: none; }
+
+div.user-post-container {
+  padding: 5px;
+  border: 1px solid #eee; }
+  div.user-post-container:hover {
+    cursor: pointer;
+    background: #2386AF; }
+  div.user-post-container h1.post-title {
+    font-size: 25px; }
+  div.user-post-container p.post-content {
+    font-size: 18px;
+    white-space: pre-wrap; }
+  div.user-post-container span.post-last-modified {
+    margin-left: 350px; }
+
+#create-post-form {
+  width: 450px; }
+  #create-post-form legend {
+    font-size: 30px; }
+  #create-post-form label {
+    display: none; }
+  #create-post-form input {
+    font-size: 20px;
+    color: white;
+    width: 435px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #create-post-form textarea {
+    font-size: 20px;
+    color: white;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+  #create-post-form input[type="submit"] {
+    letter-spacing: 2px; }
+    #create-post-form input[type="submit"]:hover {
+      background: #2287B0;
+      border: 1px #ccc solid; }

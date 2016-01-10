@@ -3,15 +3,26 @@
 <head>
   <meta charset="utf-8">
   <title>Blog</title>
-  <link rel="stylesheet" href="styles/app.css">
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-animate/angular-animate.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="scripts/bundle.js"></script>
+  <!-- build:css -->
+  <link rel="stylesheet" href="styles/bundle.min.css">
+  <!-- endbuild -->
+
+  <!-- build:js -->
+  <script src="bower_components/angular/angular.min.js"></script>
+  <script src="bower_components/angular-animate/angular-animate.min.js"></script>
+  <script src="bower_components/angular-route/angular-route.min.js"></script>
+  <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+  <script src="bower_components/angular-moment/angular-moment.min.js"></script>
+  <script src="scripts/app.js"></script>
+  <script src="scripts/controllers.js"></script>
+  <script src="scripts/directives.js"></script>
+  <script src="scripts/filters.js"></script>
+  <script src="scripts/services.js"></script>
+  <!-- endbuild -->
+  <script src="bower_components/moment/moment.js"></script>
+
 </head>
 <body>
-  <p>hello world</p>
   <div class="view-container">
     <div ng-view class="view-frame"></div>
   </div>

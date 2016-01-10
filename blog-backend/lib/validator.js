@@ -23,12 +23,12 @@ var validator = {
 		postContent: {
 			errorMessage: 'blog内容长度为2-10000个字符',
 			emptyMessage: 'blog内容为空',
-			pattern: /^.{2,10000}$/
+			pattern: /.{2,10000}/
 		},
 		commentContent: {
 			errorMessage: '评论长度为2-2000个字符',
 			emptyMessage: '评论内容为空',
-			pattern: /^.{2,2000}$/
+			pattern: /.{2,2000}/
 		},
 	},
 	_validate: function(mapper) {

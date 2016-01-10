@@ -1,0 +1,41 @@
+<a href="#home">Go to Home</a>
+<div id="user-container">
+  <div id="user-left-container">
+    <div id="user-profile-container"><span class="user-name">Name: {{userData.name}}</span></div>
+    <div id="user-posts-container">
+      <ul class="user-posts-list">
+        <li ng-repeat="postData in userData.posts">
+          <div ng-click="enterPostDetail(postData)" class="user-post-container">
+            <h1 class="post-title">{{postData.title}}</h1>
+            <p class="post-content">{{postData.content}}</p><span class="post-last-modified">{{postData.lastModified | date}}</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div id="user-right-container">
+    <div id="create-post-container">
+      <form id="create-post-form">
+        <fieldset>
+          <div id="legand">
+            <legend>Write Blog</legend>
+          </div>
+          <div class="title-container">
+            <label for="title" class="attribute-name"></label>
+            <input ng-model="title" id="title" type="text" name="title" placeholder="title"/>
+          </div>
+          <div class="content-container">
+            <label for="content" class="attribute-name"></label>
+            <textarea ng-model="content" id="content" name="content" placeholder="content..." rows="13" cols="50" form="create-post-form"></textarea>
+          </div>
+          <div class="submit-container">
+            <input id="submit" type="submit" ng-click="createPost()"/>
+          </div>
+          <div class="message-container">
+            <p ng-class="messageClass" class="message">{{message}}</p>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</div>

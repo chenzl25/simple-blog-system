@@ -1,11 +1,14 @@
-<div>
-	<div>{{home}}</div>
-	<div>{{res}}</div>
-	<div>{{haha}}++</div>
-	<ul>
-	  <li ng-repeat="blog in blogs">
-	    <span>{{blog.title}}</span>
-	    <p>{{blog.content}}</p>
-	  </li>
-	</ul>
+<a href="#user">Go to User</a>
+<div id="home-container">
+  <div id="home-posts-container">
+    <ul class="home-posts-list">
+      <li ng-repeat="postData in postsData">
+        <div ng-click="enterPostDetail(postData)" class="home-post-container">
+          <h1 class="post-title">{{postData.title}}</h1>
+          <p class="post-content">{{postData.content}}</p>
+          <div id="post-bottom-container"><span class="post-owner-name">{{postData.ownerName}}</span><span class="post-last-modified">{{postData.lastModified | date}}</span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>

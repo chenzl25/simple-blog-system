@@ -1,0 +1,11 @@
+a(href="#user") Go to User
+div#home-container
+  div#home-posts-container
+    ul.home-posts-list
+      li(ng-repeat="postData in postsData")
+        div.home-post-container(ng-click="enterPostDetail(postData)")
+          h1.post-title {{postData.title}}
+          p.post-content {{postData.content}}
+          div#post-bottom-container
+            span.post-owner-name {{postData.ownerName}}
+            span.post-last-modified {{postData.lastModified | date}}

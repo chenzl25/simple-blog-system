@@ -1,0 +1,58 @@
+<a href="#user">User</a>
+<div id="post-container">
+  <div id="post-profile-container"><span ng-if="!editState" class="post-title">{{postData.title}}</span>
+    <button ng-click="editStateHandler()" ng-if="!editState" class="edit-button">edit</button>
+    <button ng-click="editStateHandler()" ng-if="editState" class="back-button">back</button>
+    <p ng-if="!editState" class="post-content">{{postData.content}}</p>
+    <form id="edit-post-form" ng-if="editState">
+      <fieldset>
+        <div id="legand">
+          <legend>Edit Blog</legend>
+        </div>
+        <div class="title-container">
+          <label for="title" class="attribute-name"></label>
+          <input ng-model="postData.title" id="title" type="text" name="title" placeholder="title"/>
+        </div>
+        <div class="content-container">
+          <label for="content" class="attribute-name"></label>
+          <textarea ng-model="postData.content" id="content" name="content" placeholder="content..." rows="18" cols="50" form="edit-post-form"></textarea>
+        </div>
+        <div class="submit-container">
+          <input id="submit" type="submit" ng-click="editPost()"/>
+        </div>
+        <div class="message-container">
+          <p ng-class="messageClass" class="message">{{message}}</p>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div id="comments-container">
+    <ul class="comments-list">
+      <li ng-repeat="commentData in postData.comments">
+        <div class="comment-container">
+          <p class="comment-content">{{commentData.content}}</p>
+          <div id="comments-bottom-container"><span class="comment-owner-name">{{commentData.ownerName}}</span><span class="comment-last-modified">{{commentData.lastModified | date}}</span></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div id="edit-comment-container">
+    <form id="edit-comment-form">
+      <fieldset>
+        <div id="legand">
+          <legend>Write Comment</legend>
+        </div>
+        <div class="content-container">
+          <label for="content" class="attribute-name"></label>
+          <textarea ng-model="content" id="content" name="content" placeholder="content..." rows="3" cols="95" form="edit-comment-form"></textarea>
+        </div>
+        <div class="submit-container">
+          <input id="submit" type="submit" ng-click="editComment()"/>
+        </div>
+        <div class="message-container">
+          <p ng-class="messageClass" class="message">{{message}}</p>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+</div>

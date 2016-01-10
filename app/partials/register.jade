@@ -1,0 +1,22 @@
+a(href="#login")  Go to Login
+div#register-form-container
+  form#register-form
+    fieldset
+      div#legand
+        legend Register
+      div.account-container
+        label(for="account", class="attribute-name")
+        input(ng-model="account", id="account", type="text", name="account", placeholder="account")
+      div.password-container
+        label(for="password", class="attribute-name")
+        input(ng-model="password", id="password", type="password", name="password", placeholder="password")
+      div.again-container
+        label(for="again", class="attribute-name")
+        input(ng-model="again", id="again", type="password", name="again", placeholder="again")
+      div.name-container
+        label(for="name", class="attribute-name")
+        input(ng-model="name", id="name", type="text", name="name", placeholder="name")
+      div.submit-container
+        input(id="submit", type='submit', ng-click="register()")
+      div.message-container
+        p(class="message" ng-class="messageClass") {{message}}

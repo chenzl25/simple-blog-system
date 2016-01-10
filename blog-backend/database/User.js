@@ -9,6 +9,7 @@ ObjectId = mongoose.Schema.Types.ObjectId;
 var CommentSchema = new mongoose.Schema({
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
+    ownerName: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
     lastModified: {type:Number,default: Date.now},
 });
@@ -16,6 +17,7 @@ var PostSchema = new mongoose.Schema({
     title: {type: String, default: null},
     content: {type: String, default: null},
     ownerAccount: {type: String, default: null},
+    ownerName: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
     lastModified: {type:Number,default: Date.now},
     comments: [CommentSchema]
@@ -117,7 +119,7 @@ UserSchema.statics.login = function (account, password) {
           );
     return promise;
 };
-UserSchema.statics.addPost = function (account, title, content) {
+UserSchema.statics.addPost = function (account, title, content, name) {
   var that = this;
   var promise
     = this.findOne({account:account})
@@ -130,6 +132,7 @@ UserSchema.statics.addPost = function (account, title, content) {
               newPost.ownerAccount = account;
               newPost.title = title;
               newPost.content = content;
+              newPost.ownerName = name;
               userData.posts.unshift(newPost);
               return userData.save().then(
                 (userData) => Post.addPost(userData.posts[0]),
@@ -195,7 +198,7 @@ UserSchema.statics.deletePost = function (account, id) {
           );
     return promise;
 };
-UserSchema.statics.addComment = function(commentOwnerAccount ,postId, commentContent) {
+UserSchema.statics.addComment = function(commentOwnerAccount ,postId, commentContent, commentOwnerName) {
   var that = this;
   return Post.findOne({_id: postId}).then((postData) => that.findOne({account:postData.ownerAccount}))
                              .then((userData) => {
@@ -207,7 +210,7 @@ UserSchema.statics.addComment = function(commentOwnerAccount ,postId, commentCon
                                 //   return Promise.reject('该blog已经被禁');
                                 // }
                                 debug(postData);
-                                postData.comments.push({ownerAccount: commentOwnerAccount, content: commentContent});
+                                postData.comments.push({ownerAccount: commentOwnerAccount, content: commentContent, ownerName: commentOwnerName});
                                 return userData.save().then(() => postData);
                              })
                              .then((postData) => Post.addComment(postId, postData.comments[postData.comments.length -1]),

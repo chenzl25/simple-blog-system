@@ -1,19 +1,16 @@
-var webpackConfig = require('../webpack.config.pro.js');
-// webpackConfig.entry = {};
 module.exports = function(config){
   config.set({
 
-    basePath : './',
+    basePath : '../',
 
     files : [
-      // 'node_modules/angular/angular.js',
-      // 'node_modules/angular-route/angular-route.js',
-      // './node_modules/angular-mocks/angular-mocks.js',
-      // 'src/scripts/**/*.js',
-      // './dist/bundle.js',
-      // './dist/init.js',
-      // 'test/unit/*.js'
-      'tests.webpack.js'
+      'dist/bower_components/angular/angular.js',
+      'dist/bower_components/angular-route/angular-route.js',
+      'dist/bower_components/angular-resource/angular-resource.js',
+      'dist/bower_components/angular-animate/angular-animate.js',
+      'dist/bower_components/angular-mocks/angular-mocks.js',
+      'dist/scripts/bundle.js',
+      'test/unit/*.js'
     ],
 
     autoWatch : true,
@@ -21,18 +18,10 @@ module.exports = function(config){
     frameworks: ['jasmine'],
 
     browsers : ['Chrome', 'Firefox'],
-    preprocessors: {
-            // add webpack as preprocessor
-            // './src/scripts/app.js': ['webpack'],
-            // 'unit/*.js': ['webpack']
-             'tests.webpack.js': ['webpack']
-        },
-    webpack: webpackConfig,
     plugins : [
             'karma-chrome-launcher',
             'karma-firefox-launcher',
             'karma-jasmine',
-            require("karma-webpack")
             ],
 
     junitReporter : {

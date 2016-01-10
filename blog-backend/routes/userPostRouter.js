@@ -16,7 +16,7 @@ router.use(tools.checkLoginMiddleware);
 
 router.post('/post', tools.validateMiddleware(validator.validatePost.bind(validator)), function addPost(req, res) {
   // res.setHeader('Content-type','application/json');
-  User.addPost(req.session.userData.account, req.body.title, req.body.content).then(
+  User.addPost(req.session.userData.account, req.body.title, req.body.content, req.session.userData.name).then(
     (postData) => {
       debug(postData);
       res.json({error: false, postData: postData});
@@ -63,7 +63,7 @@ router.delete('/post/:postId', function deletePost(req, res) {
   )
 });
 router.post('/post/:postId/comment', tools.validateMiddleware(validator.validateComment.bind(validator)), function addComment(req, res) {
-  User.addComment(req.session.userData.account, req.params.postId, req.body.content).then(
+  User.addComment(req.session.userData.account, req.params.postId, req.body.content, req.session.userData.name).then(
     (commentData) => {
       debug(commentData);
       res.json({error: false, commentData: commentData});

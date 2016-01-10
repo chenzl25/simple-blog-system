@@ -1,0 +1,32 @@
+<a href="#login"> Go to Login</a>
+<div id="register-form-container">
+  <form id="register-form">
+    <fieldset>
+      <div id="legand">
+        <legend>Register</legend>
+      </div>
+      <div class="account-container">
+        <label for="account" class="attribute-name"></label>
+        <input ng-model="account" id="account" type="text" name="account" placeholder="account"/>
+      </div>
+      <div class="password-container">
+        <label for="password" class="attribute-name"></label>
+        <input ng-model="password" id="password" type="password" name="password" placeholder="password"/>
+      </div>
+      <div class="again-container">
+        <label for="again" class="attribute-name"></label>
+        <input ng-model="again" id="again" type="password" name="again" placeholder="again"/>
+      </div>
+      <div class="name-container">
+        <label for="name" class="attribute-name"></label>
+        <input ng-model="name" id="name" type="text" name="name" placeholder="name"/>
+      </div>
+      <div class="submit-container">
+        <input id="submit" type="submit" ng-click="register()"/>
+      </div>
+      <div class="message-container">
+        <p ng-class="messageClass" class="message">{{message}}</p>
+      </div>
+    </fieldset>
+  </form>
+</div>
