@@ -1,13 +1,16 @@
 
 <nav>
   <ul>
-    <li> <a href="#manager">博客主页</a></li>
+    <li> <a href="#manager/page/1">博客主页</a></li>
   </ul>
 </nav>
 <div id="manager-container">
+  <div id="search-container">
+    <input ng-model="search" placeholder="search..."/>
+  </div>
   <div id="manager-posts-container">
     <ul class="manager-posts-list">
-      <li ng-repeat="postData in postsData">
+      <li ng-repeat="postData in postsData | filter:search">
         <div ng-click="enterPostDetail(postData)" class="manager-post-container">
           <h1 class="post-title">{{postData.title}}</h1>
           <p class="post-content">{{postData.content}}</p>

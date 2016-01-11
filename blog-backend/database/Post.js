@@ -9,7 +9,7 @@ var CommentSchema = new mongoose.Schema({
     ownerAccount: {type: String, default: null},
     ownerName: {type: String, default: null},
     isForbidden: {type: Boolean, default: false},
-    lastModified: {type:Number,default: Date.now},
+    lastModified: {type:Number,default: Date.now, index:true},
 });
 
 //parent Schema
@@ -60,16 +60,40 @@ PostSchema.statics.addPost = function(post) {
     err => Promise.reject(err.message)
   );
 };
-
-PostSchema.statics.getPosts = function() {
-  var promise
-  = this.find()
-        .then(
-          (postsData) => Promise.resolve(forbiddenFilter(postsData).sort((a,b) => a.lastModified < b.lastModified)),
-          (err) => Promise.reject(err.message)
-        );
-  return promise;
+PostSchema.statics.getPosts = function(query) {
+  query = parseInt(query);
+  if (query === NaN || query < 1) {
+    query = 1;
+  }
+  var eachPage = 10;
+  var total;
+  return this.find()
+             .count()
+             .then(count => {total = count; return query <= Math.ceil(count/eachPage) ? query: Math.ceil(count/eachPage);})
+             .then(page => this.find().sort({lastModified: -1}).skip((page-1)*eachPage).limit(eachPage))
+             .then(
+                (postsData) => Promise.resolve({postsData:forbiddenFilter(postsData), total: total, eachPage: eachPage}),
+                (err) => Promise.reject(err.message)
+              );
+      
+  // this.find()
+  //       .sort({lastModified: -1})
+  //       .then(
+  //         (postsData) => Promise.resolve(forbiddenFilter(postsData)),
+  //         (err) => Promise.reject(err.message)
+  //       );
+  // return promise;
 };
+// PostSchema.statics.getPosts = function() {
+//   var promise
+//   = this.find()
+//         .sort({lastModified: -1})
+//         .then(
+//           (postsData) => Promise.resolve(forbiddenFilter(postsData)),
+//           (err) => Promise.reject(err.message)
+//         );
+//   return promise;
+// };
 PostSchema.statics.editPost = function(post) {
   var promise 
   = this.findOne({_id: post._id}).then(

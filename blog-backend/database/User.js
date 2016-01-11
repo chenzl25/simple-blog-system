@@ -112,7 +112,7 @@ UserSchema.statics.login = function (account, password) {
               if (!userData) {
                 return Promise.reject('账号或密码错误');
               }
-              userData.posts = forbiddenFilter(userData.posts).sort((a,b) => a.lastModified < b.lastModified);
+              userData.posts = forbiddenFilter(userData.posts).sort((a,b) => b.lastModified - a.lastModified);
               return Promise.resolve(userData);
             },
             (err) => Promise.reject(err.message)

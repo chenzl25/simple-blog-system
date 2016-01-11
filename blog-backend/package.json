@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "debug": "node-inspector & DEBUG=api:* node --debug ./bin/www",
-    "test": "mocha",
+    "test": "mocha"
   },
   "dependencies": {
     "body-parser": "~1.13.2",

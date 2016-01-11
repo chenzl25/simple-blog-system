@@ -1,19 +1,21 @@
 
 <nav>
   <ul>
-    <li> <a href="#home">博客主页</a></li>
+    <li> <a href="#home/page/1">博客主页</a></li>
     <li>  <a href="#user">用户主页</a></li>
   </ul>
 </nav>
 <div id="user-container">
   <div id="user-left-container">
     <div id="user-profile-container"><span class="user-name">用户: {{userData.name}}</span></div>
+    <div id="user-search-container">
+      <input ng-model="search" placeholder="search..."/>
+    </div>
     <div id="user-posts-container">
       <ul class="user-posts-list">
-        <li ng-repeat="postData in userData.posts">
+        <li ng-repeat="postData in userData.posts | filter:search">
           <div ng-click="enterPostDetail(postData)" class="user-post-container">
-            <h1 class="post-title">{{postData.title}}</h1>
-            <p class="post-content">{{postData.content}}</p><span class="post-last-modified">{{postData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span>
+            <h1 class="post-title">{{postData.title}}</h1><span class="post-last-modified">{{postData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span>
           </div>
         </li>
       </ul>

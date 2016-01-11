@@ -1,4 +1,4 @@
-var url = require('url');
+  var url = require('url');
 // Load plugins
 
 var gulp = require('gulp'),
@@ -24,6 +24,7 @@ var gulp = require('gulp'),
 
 var srcPath = {
   SRC : 'app',
+  SRC_FILES: 'app/**/*',
   ENTRY_POINT: './app/scripts/app.js',
   HTML: 'app/index.html',
   SCSS: 'app/styles/*.scss',
@@ -32,7 +33,7 @@ var srcPath = {
   SCRIPTS : 'app/scripts/**/*.js',
   IMAGES : 'app/images/**/*',
   PARTIALS: 'app/partials/*',
-  BOWER_ALL: 'app/bower_components/*/*.js',
+  BOWER_ALL: 'app/bower_components/**/*',
   BOWER_MIN: 'app/bower_components/**/angular*.min.js'
 }
 var destPath = {
@@ -56,7 +57,7 @@ var destPath = {
 gulp.task('webserver', function() {
   connect.server({
   	root: './dist',
-  	port:8080,
+  	port:8888,
   	livereload: true,
 		middleware: function (connect, opt) {
 				var proxyOptions = url.parse('http://localhost:3000/');
@@ -176,15 +177,20 @@ gulp.task('watch', function() {
 
   // Watch image files
   gulp.watch(srcPath.IMAGES, ['images']);
-  watch(destPath.DEST_FILES).pipe(connect.reload());
+  // watch(destPath.DEST_FILES).pipe(connect.reload());
+  watch(srcPath.SRC_FILES).pipe(connect.reload());
 });
+
 
 
 gulp.task('replaceHTML', function(){
   return gulp.src(srcPath.HTML)
         .pipe(htmlreplace({
-          'js': [destPath.SCRIPT_MIN_BUNDLE, destPath.ANGULAR_MIN_BUNDLE],
-          'css': destPath.STYLE_MIN_BUNDLE
+          
+
+
+          'js': ['bower_components/angular_bundle.min.js','scripts/bundle.min.js'],
+          'css': 'styles/bundle.min.css'
         }))
         .pipe(gulp.dest(destPath.DEST));
 });

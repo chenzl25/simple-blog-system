@@ -2,7 +2,10 @@
 
 var blogApp = angular.module('blogApp', [
   'ngRoute',
-  'blogControllers'
+  'blogControllers',
+  'blogServices',
+  'ngAnimate'
+  // 'blogAnimations'
 ]);
 
 blogApp.config(['$routeProvider',
@@ -20,15 +23,15 @@ blogApp.config(['$routeProvider',
         templateUrl: './partials/user.html',
         controller: 'userCtrl'
       }).
-      when('/home', {
+      when('/home/page/:page', {
         templateUrl: './partials/home.html',
         controller: 'homeCtrl'
       }).
-      when('/user/:postId', {
+      when('/user/post/:postId', {
         templateUrl: './partials/user-post-detail.html',
         controller: 'userPostDetailCtrl'
       }).
-      when('/home/:postId', {
+      when('/home/post/:postId', {
         templateUrl: './partials/home-post-detail.html',
         controller: 'homePostDetailCtrl'
       }).
@@ -36,7 +39,7 @@ blogApp.config(['$routeProvider',
         templateUrl: './partials/manager.html',
         controller: 'managerCtrl'
       }).
-      when('/manager/:postId', {
+      when('/manager/post/:postId', {
         templateUrl: './partials/manager-post-detail.html',
         controller: 'managerPostDetailCtrl'
       }).

@@ -28,6 +28,12 @@ div.home-post-container {
 	p.post-content {
 		font-size: 18px;
 		white-space: pre-wrap;
+		display: -webkit-box;
+	    -webkit-line-clamp: 3;
+	    -webkit-box-orient: vertical;
+	    overflow: hidden;
+		height: 25*3px;
+		text-overflow: ellipsis;
 	}
 }
 
@@ -40,4 +46,28 @@ div.home-post-container {
 		display: block;
 	}
  
+}
+
+#home-page-cantainer {
+	width: 800px;
+	margin-top: 5px; 
+	margin-bottom: 5px; 
+	margin-left: auto;
+	margin-right: auto;
+	.home-page-list {
+		display: flex;
+		flex-direction: row;
+		margin-left: auto;
+		margin-right: auto;
+		content-justify: space-between;
+		list-style: none;
+		width: 400px;
+		li {
+			flex: 1 1 5%;
+			a {
+				cursor: pointer;
+				font-size: 20px;
+			}
+		}
+	}
 }

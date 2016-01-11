@@ -1,24 +1,39 @@
 #user-container {
-	display: flex;
-	flex-direction: row;
-	content-justify: space betweem;
-	#user-left-container, #user-right-container {
-		flex: 1 1 0;
-	}
+  display: flex;
+  flex-direction: row;
+  content-justify: space-between;
+  #user-left-container, #user-right-container {
+    flex: 1 1 0;
+  }
+  padding-left: 10px;
 }
 span.user-name {
 	font-size: 30px;
 }
-
+#user-search-container {
+  width: 500px;
+  margin-bottom: 10px;
+  input {
+    font-size: 20px;
+    color: white;
+    width: 500px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border:1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px;
+  }
+}
 #user-posts-container {
 	border-top: 1px solid #eee;
 	border-bottom: 1px solid #eee;
 	border-radius: 5px;
-	height: 500px;
+	height: 490px;
 	overflow: auto;
 	width: 500px;
-	margin-left: 10px;
-	// padding: 5px;
 	margin-top: 10px;
 
 }
@@ -68,7 +83,7 @@ div.user-post-container {
   textarea {
     font-size: 20px;
     color: white;
-    // width: 350px;
+    width: 435px;
     // height: 40px;
     display: inline-block;
     outline: none;

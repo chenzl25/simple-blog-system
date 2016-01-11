@@ -4,12 +4,12 @@ echo '\n'
 curl -c cookie14331048.file --data 'account=14331048&password=14331048' \
 http://localhost:3000/api/login
 echo '\n'
-curl -b cookie14331048.file  \
-http://localhost:3000/api/posts
-echo '\n'
-# curl -b cookie14331048.file --data 'title=happy&content=I am the king' \
-# http://localhost:3000/api/post
+# curl -b cookie14331048.file  \
+# http://localhost:3000/api/posts?query=123456
 # echo '\n'
+curl -b cookie14331048.file --data 'title=LiveScript&content=is a language which compiles to JavaScript. It has a straightforward mapping to JavaScript and allows you to write expressive code devoid of repetitive boilerplate. While LiveScript adds many features to assist in functional style programming, it also has many improvements for object oriented and imperative programming.' \
+http://localhost:3000/api/post
+echo '\n'
 # curl -b cookie14331048.file -X PUT --data 'title=123&content=456' \
 # http://localhost:3000/api/post/568df7d8713c548362ca0659
 # echo '\n'

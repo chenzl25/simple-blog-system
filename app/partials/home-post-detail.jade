@@ -1,7 +1,7 @@
 nav
   ul
     li 
-      a(href="#home") 博客主页
+      a(href="#home/page/1") 博客主页
     li   
       a(href="#user") 用户主页
 div#post-container
@@ -23,7 +23,7 @@ div#post-container
             legend Write Comment
           div.content-container
             label(for="content", class="attribute-name")
-            textarea(ng-model="content", id="content", name="content", placeholder="content...", rows="3", cols="95", form="create-comment-form")
+            textarea(ng-model="content", id="content", name="content", placeholder="content...", form="create-comment-form")
           div.submit-container
             input(id="submit" type='submit' ng-click="createComment()")
           div.message-container

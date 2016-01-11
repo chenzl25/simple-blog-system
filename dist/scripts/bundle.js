@@ -56,7 +56,10 @@ phonecatAnimations.animation('.phone', function() {
 
 var blogApp = angular.module('blogApp', [
   'ngRoute',
-  'blogControllers'
+  'blogControllers',
+  'blogServices',
+  'ngAnimate'
+  // 'blogAnimations'
 ]);
 
 blogApp.config(['$routeProvider',
@@ -74,15 +77,15 @@ blogApp.config(['$routeProvider',
         templateUrl: './partials/user.html',
         controller: 'userCtrl'
       }).
-      when('/home', {
+      when('/home/page/:page', {
         templateUrl: './partials/home.html',
         controller: 'homeCtrl'
       }).
-      when('/user/:postId', {
+      when('/user/post/:postId', {
         templateUrl: './partials/user-post-detail.html',
         controller: 'userPostDetailCtrl'
       }).
-      when('/home/:postId', {
+      when('/home/post/:postId', {
         templateUrl: './partials/home-post-detail.html',
         controller: 'homePostDetailCtrl'
       }).
@@ -90,7 +93,7 @@ blogApp.config(['$routeProvider',
         templateUrl: './partials/manager.html',
         controller: 'managerCtrl'
       }).
-      when('/manager/:postId', {
+      when('/manager/post/:postId', {
         templateUrl: './partials/manager-post-detail.html',
         controller: 'managerPostDetailCtrl'
       }).
@@ -122,14 +125,20 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
             $scope.message = '';
             $rootScope.userData = data.userData;
             if (data.userData.isManager) {
-              $location.url('/manager');
+              $location.url('/home/page/1');
             } else {
               $location.url('/user');
+              // $location.url('/home/page/1'); // debug use
             }
           }
         });
       }
     }
+    //*****************************
+    // $scope.account = '14331048';
+    // $scope.password = '14331048';
+    // $scope.login();
+    //*****************************
     //*****************************
     // $scope.account = 'manager';
     // $scope.password = 'manager';
@@ -186,16 +195,16 @@ blogControllers.controller('registerCtrl', ['$scope','$http','validator',
     }
   }]);
 
-blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope','$location',
-  function($scope, $http, validator, $rootScope, $location) {
+blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope','$location','$sce',
+  function($scope, $http, validator, $rootScope, $location,$sce) {
     if (!$rootScope.userData) {
       $location.url('/login');
     }
     $scope.enterPostDetail = function(postData) {
       $rootScope.postData = postData;
-      $location.url('/user/'+postData._id);
+      $location.url('/user/post/'+postData._id);
     }
-    $scope.title = '';
+    $scope.title = ''
     $scope.content = '';
     $scope.message = '';
     $scope.messageClass = '';
@@ -316,17 +325,51 @@ blogControllers.controller('userPostDetailCtrl', ['$scope','$http','validator','
     }
   }]);
 
-blogControllers.controller('homeCtrl', ['$scope','$http','validator','$rootScope','$location',
-  function($scope, $http, validator, $rootScope, $location) {
+blogControllers.controller('homeCtrl', ['$scope','$http','validator','$rootScope','$location','$routeParams',
+  function($scope, $http, validator, $rootScope, $location,$routeParams) {
     if (!$rootScope.userData) {
       $location.url('/login');
     }
-    $http.get('/proxy/api/posts').success(function(data) {
-      $rootScope.postsData = data.postsData;
-    });
+
+    $scope.queryPosts = function(query) {
+      $http.get('/proxy/api/posts?query=' + query).success(function(data) {
+        if (data.error) {
+          alert(data.message); // modify later
+        } else {
+          $rootScope.postsData = data.postsData;
+          $scope.totalPosts = data.total;
+          $scope.postsEachPage = data.eachPage;
+          $scope.totalPages = Math.ceil($scope.totalPosts/$scope.postsEachPage);
+          $scope.pagesArray = [];
+          // for (var i = 1; i <= $scope.totalPages; i++) {
+          //   $scope.pagesArray.push(i);
+          // }
+          $scope.currentPage = $routeParams.page;
+          // 10 pages per group
+          $scope.totalGroups = Math.ceil($scope.totalPages / 10);
+          $scope.currentGroup = Math.ceil($scope.currentPage / 10);
+          $scope.prePage = undefined;
+          $scope.sufPage = undefined;
+          if ($scope.currentGroup > 1) {
+            $scope.prePage = ($scope.currentGroup-1)*10;
+          }
+          if ($scope.currentGroup < $scope.totalGroups) {
+            $scope.sufPage = ($scope.currentGroup*10)+1;
+          }
+          for (var i = ($scope.currentGroup-1)*10+1;i <= $scope.currentGroup*10 && i <= $scope.totalPages; i++) {
+            $scope.pagesArray.push(i);
+          }
+        }
+      });
+    }
+    $scope.queryPosts($routeParams.page);
     $scope.enterPostDetail = function(postData) {
       $rootScope.postData = postData;
-      $location.url('/home/'+postData._id);
+      if ($rootScope.userData.isManager) {
+        $location.url('/manager/post/'+postData._id);
+      } else {
+        $location.url('/home/post/'+postData._id);
+      }
     }
   }]);
 
@@ -357,19 +400,19 @@ blogControllers.controller('homePostDetailCtrl', ['$scope','$http','validator','
     }
   }]);
 
-blogControllers.controller('managerCtrl', ['$scope','$http','validator','$rootScope','$location',
-  function($scope, $http, validator, $rootScope, $location) {
-    if (!$rootScope.userData) {
-      $location.url('/login');
-    }
-    $http.get('/proxy/api/posts').success(function(data) {
-      $rootScope.postsData = data.postsData;
-    });
-    $scope.enterPostDetail = function(postData) {
-      $rootScope.postData = postData;
-      $location.url('/manager/'+postData._id);
-    }
-  }]);
+// blogControllers.controller('managerCtrl', ['$scope','$http','validator','$rootScope','$location',
+//   function($scope, $http, validator, $rootScope, $location) {
+//     if (!$rootScope.userData) {
+//       $location.url('/login');
+//     }
+//     $http.get('/proxy/api/posts').success(function(data) {
+//       $rootScope.postsData = data.postsData;
+//     });
+//     $scope.enterPostDetail = function(postData) {
+//       $rootScope.postData = postData;
+//       $location.url('/manager/post/'+postData._id);
+//     }
+//   }]);
 blogControllers.controller('managerPostDetailCtrl', ['$scope','$http','validator','$rootScope','$location','$routeParams',
   function($scope, $http, validator, $rootScope, $location, $routeParams) {
     if (!$rootScope.userData) {

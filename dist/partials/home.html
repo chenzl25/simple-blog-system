@@ -1,20 +1,37 @@
 
 <nav>
   <ul>
-    <li> <a href="#home">博客主页</a></li>
-    <li>  <a href="#user">用户主页</a></li>
+    <li> <a href="#home/page/1">博客主页</a></li>
+    <li ng-if="!userData.isManager">  <a href="#user">用户主页</a></li>
   </ul>
 </nav>
 <div id="home-container">
+  <div id="search-container">
+    <input ng-model="search" placeholder="search..."/>
+  </div>
+  <div id="home-page-cantainer">
+    <ul class="home-page-list">
+      <li ng-if="prePage"><a ng-href="#home/page/{{prePage}}">...  </a></li>
+      <li ng-repeat="i in pagesArray"><a ng-href="#home/page/{{i}}" ng-style="{color:currentPage==i?'red':'#eee'}">{{i}}</a></li>
+      <li ng-if="sufPage"><a ng-href="#home/page/{{sufPage}}">...  </a></li>
+    </ul>
+  </div>
   <div id="home-posts-container">
     <ul class="home-posts-list">
-      <li ng-repeat="postData in postsData">
+      <li ng-repeat="postData in postsData | filter:search">
         <div ng-click="enterPostDetail(postData)" class="home-post-container">
           <h1 class="post-title">{{postData.title}}</h1>
           <p class="post-content">{{postData.content}}</p>
           <div id="post-bottom-container"><span class="post-owner-name">{{postData.ownerName}}</span><span class="post-last-modified">{{postData.lastModified | date:"MM/dd/yyyy 'at' h:mma"}}</span></div>
         </div>
       </li>
+    </ul>
+  </div>
+  <div id="home-page-cantainer">
+    <ul class="home-page-list">
+      <li ng-if="prePage"><a ng-href="#home/page/{{prePage}}">...  </a></li>
+      <li ng-repeat="i in pagesArray"><a ng-href="#home/page/{{i}}" ng-style="{color:currentPage==i?'red':'#eee'}">{{i}}</a></li>
+      <li ng-if="sufPage"><a ng-href="#home/page/{{sufPage}}">...  </a></li>
     </ul>
   </div>
 </div>

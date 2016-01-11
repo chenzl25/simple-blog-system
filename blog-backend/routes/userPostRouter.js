@@ -29,10 +29,14 @@ router.post('/post', tools.validateMiddleware(validator.validatePost.bind(valida
 });
 router.get('/posts', function getPosts(req, res) {
   res.setHeader('Content-type','application/json');
-  Post.getPosts().then(
-    (postsData) => {
-      debug(postsData);
-      res.json({error: false, postsData: postsData});
+  debug(req.query.query);
+  Post.getPosts(req.query.query).then(
+    (postsDataAndTotal) => {
+      debug(postsDataAndTotal);
+      res.json({error: false,
+                postsData: postsDataAndTotal.postsData,
+                total: postsDataAndTotal.total,
+                eachPage: postsDataAndTotal.eachPage});
     },
     (errorMessage) => {
       res.json({error: true, message: errorMessage});
@@ -40,6 +44,18 @@ router.get('/posts', function getPosts(req, res) {
   );
 });
 
+// router.get('/posts', function getPosts(req, res) {
+//   res.setHeader('Content-type','application/json');
+//   Post.getPosts().then(
+//     (postsData) => {
+//       debug(postsData);
+//       res.json({error: false, postsData: postsData});
+//     },
+//     (errorMessage) => {
+//       res.json({error: true, message: errorMessage});
+//     }
+//   );
+// });
 router.put('/post/:postId', tools.validateMiddleware(validator.validatePost.bind(validator)), function editPost(req, res) {
   User.editPost(req.session.userData.account, req.params.postId, req.body.title, req.body.content).then(
     (postData) => {

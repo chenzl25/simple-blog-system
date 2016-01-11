@@ -1,3 +1,84 @@
+.view-container {
+  position: relative; }
+
+.view-frame.ng-enter, .view-frame.ng-leave {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0; }
+
+.view-frame.ng-enter {
+  -webkit-animation: 0.5s fade-in;
+  animation: 0.5s fade-in;
+  z-index: 100; }
+
+.view-frame.ng-leave {
+  -webkit-animation: 0.5s fade-out;
+  animation: 0.5s fade-out;
+  z-index: 99; }
+
+@keyframes fade-in {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+@-webkit-keyframes fade-in {
+  from {
+    opacity: 0; }
+  to {
+    opacity: 1; } }
+
+@keyframes fade-out {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+
+@-webkit-keyframes fade-out {
+  from {
+    opacity: 1; }
+  to {
+    opacity: 0; } }
+
+.user-posts-list > li.ng-enter,
+.user-posts-list > li.ng-leave,
+.user-posts-list > li.ng-move,
+.home-posts-list > li.ng-enter,
+.home-posts-list > li.ng-leave,
+.home-posts-list > li.ng-move {
+  transition: 0.5s linear all; }
+
+.user-posts-list > li.ng-enter,
+.user-posts-list > li.ng-move,
+.home-posts-list > li.ng-enter,
+.home-posts-list > li.ng-move {
+  opacity: 0;
+  height: 0;
+  overflow: hidden; }
+
+.home-posts-list > li.ng-move.ng-move-active,
+.home-posts-list > li.ng-enter.ng-enter-active {
+  opacity: 1;
+  height: 120px; }
+
+.user-posts-list > li.ng-move.ng-move-active,
+.user-posts-list > li.ng-enter.ng-enter-active {
+  opacity: 1;
+  height: 67px; }
+
+.user-posts-list > li.ng-leave,
+.home-posts-list > li.ng-leave {
+  opacity: 1;
+  overflow: hidden; }
+
+.user-posts-list > li.ng-leave.ng-leave-active,
+.home-posts-list > li.ng-leave.ng-leave-active {
+  opacity: 0;
+  height: 67px;
+  padding-top: 0;
+  padding-bottom: 0; }
+
 * {
   margin: 0;
   padding: 0;
@@ -42,7 +123,7 @@ html {
   src: url(../fonts/DidactGothic.ttf); }
 
 ::-webkit-scrollbar {
-  width: 2px; }
+  width: 4px; }
 
 ::-webkit-scrollbar-track {
   background-color: transparent; }
@@ -113,6 +194,8 @@ html {
   #create-comment-form textarea {
     font-size: 20px;
     color: white;
+    width: 800px;
+    height: 100px;
     display: inline-block;
     outline: none;
     background: transparent;
@@ -150,7 +233,13 @@ div.home-post-container {
     font-size: 25px; }
   div.home-post-container p.post-content {
     font-size: 18px;
-    white-space: pre-wrap; }
+    white-space: pre-wrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 75px;
+    text-overflow: ellipsis; }
 
 #post-bottom-container {
   margin-left: 600px; }
@@ -158,6 +247,32 @@ div.home-post-container {
     display: block; }
   #post-bottom-container .post-last-modified {
     display: block; }
+
+#home-page-cantainer {
+  width: 800px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: auto;
+  margin-right: auto; }
+  #home-page-cantainer .home-page-list {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    margin-left: auto;
+    margin-right: auto;
+    content-justify: space-between;
+    list-style: none;
+    width: 400px; }
+    #home-page-cantainer .home-page-list li {
+      -webkit-flex: 1 1 5%;
+          -ms-flex: 1 1 5%;
+              flex: 1 1 5%; }
+      #home-page-cantainer .home-page-list li a {
+        cursor: pointer;
+        font-size: 20px; }
 
 #post-container {
   width: 800px;
@@ -243,6 +358,24 @@ div.home-post-container {
 
 span.manager-name {
   font-size: 30px; }
+
+#search-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 800px;
+  margin-bottom: 10px; }
+  #search-container input {
+    font-size: 20px;
+    color: white;
+    width: 800px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
 
 #manager-posts-container {
   margin-left: auto;
@@ -379,7 +512,8 @@ p.message {
   -webkit-flex-direction: row;
       -ms-flex-direction: row;
           flex-direction: row;
-  content-justify: space betweem; }
+  content-justify: space-between;
+  padding-left: 10px; }
   #user-container #user-left-container, #user-container #user-right-container {
     -webkit-flex: 1 1 0;
         -ms-flex: 1 1 0;
@@ -388,14 +522,29 @@ p.message {
 span.user-name {
   font-size: 30px; }
 
+#user-search-container {
+  width: 500px;
+  margin-bottom: 10px; }
+  #user-search-container input {
+    font-size: 20px;
+    color: white;
+    width: 500px;
+    height: 40px;
+    display: inline-block;
+    outline: none;
+    background: transparent;
+    border: 1px white solid;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding-left: 10px; }
+
 #user-posts-container {
   border-top: 1px solid #eee;
   border-bottom: 1px solid #eee;
   border-radius: 5px;
-  height: 500px;
+  height: 490px;
   overflow: auto;
   width: 500px;
-  margin-left: 10px;
   margin-top: 10px; }
 
 ul.user-posts-list {
@@ -436,6 +585,7 @@ div.user-post-container {
   #create-post-form textarea {
     font-size: 20px;
     color: white;
+    width: 435px;
     display: inline-block;
     outline: none;
     background: transparent;
