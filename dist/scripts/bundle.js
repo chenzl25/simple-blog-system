@@ -111,7 +111,7 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
     $scope.account = '';
     $scope.password = '';
     $scope.login = function() {
-      window.removeEventListener("beforeunload");
+      // window.removeEventListener("beforeunload");
       var validateResult = validator.validateLogin({account: $scope.account, password: $scope.password});
       if (validateResult) {
         $scope.messageClass = 'warning';
@@ -122,12 +122,12 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
             $scope.messageClass = 'warning';
             $scope.message = data.message;
           } else {
-            window.addEventListener("beforeunload", function (e) {
-              var confirmationMessage = 'Sure to leave?';
+            // window.addEventListener("beforeunload", function (e) {
+            //   var confirmationMessage = 'Sure to leave?';
 
-              (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-              return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-            });
+            //   (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+            //   return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+            // });
             $scope.messageClass = 'success';
             $scope.message = '';
             $rootScope.userData = data.userData;
@@ -216,8 +216,8 @@ blogControllers.controller('registerCtrl', ['$scope','$http','validator',
     }
   }]);
 
-blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope','$location','$sce',
-  function($scope, $http, validator, $rootScope, $location,$sce) {
+blogControllers.controller('userCtrl', ['$scope','$http','validator','$rootScope','$location',
+  function($scope, $http, validator, $rootScope, $location) {
     if (!$rootScope.userData) {
       $location.url('/login');
     }
