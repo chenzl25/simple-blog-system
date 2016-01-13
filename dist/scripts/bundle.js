@@ -111,6 +111,7 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
     $scope.account = '';
     $scope.password = '';
     $scope.login = function() {
+      window.removeEventListener("beforeunload");
       var validateResult = validator.validateLogin({account: $scope.account, password: $scope.password});
       if (validateResult) {
         $scope.messageClass = 'warning';
@@ -121,6 +122,12 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
             $scope.messageClass = 'warning';
             $scope.message = data.message;
           } else {
+            window.addEventListener("beforeunload", function (e) {
+              var confirmationMessage = 'Sure to leave?';
+
+              (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+              return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+            });
             $scope.messageClass = 'success';
             $scope.message = '';
             $rootScope.userData = data.userData;
@@ -134,6 +141,20 @@ blogControllers.controller('loginCtrl', ['$scope', '$rootScope','$http','validat
         });
       }
     }
+    // function autoLogin() {
+    //   $http.post('/proxy/api/login', {account:'autoLogin',password:'autoLogin'})
+    //        .success(function(data) {
+    //           if (!data.error) {
+    //             $rootScope.userData = data.userData;
+    //             if (data.userData.isManager) {
+    //               $location.url('/home/page/1');
+    //             } else {
+    //               $location.url('/user');
+    //             }
+    //           }
+    //        })
+    // }
+    // autoLogin()
     //*****************************
     // $scope.account = '14331048';
     // $scope.password = '14331048';

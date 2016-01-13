@@ -31,6 +31,19 @@ router.post('/register', tools.validateMiddleware(validator.validateRegister.bin
 router.post('/login', tools.validateMiddleware(validator.validateLogin.bind(validator)), function login(req, res) {
   // res.setHeader('Content-type','application/json');
   debug(req.body);
+  if (req.session.userData) {
+    User.alreadyLogin(req.session.userData.account).then(
+      (userData) => {
+        debug(userData);
+        req.session.userData = userData;
+        res.json({error: false, userData: userData});
+      },
+      (errorMessage) => {
+        debug(errorMessage);
+        res.json({error: true, message: errorMessage});
+      }
+    );
+  }
   User.login(req.body.account, req.body.password).then(
     (userData) => {
   		debug(userData);

@@ -119,6 +119,21 @@ UserSchema.statics.login = function (account, password) {
           );
     return promise;
 };
+UserSchema.statics.alreadyLogin = function (account) {
+    var promise
+    = this.findOne({account:account}, {password:0})
+          .then(
+            (userData) => {
+              if (!userData) {
+                return Promise.reject('...');
+              }
+              userData.posts = forbiddenFilter(userData.posts).sort((a,b) => b.lastModified - a.lastModified);
+              return Promise.resolve(userData);
+            },
+            (err) => Promise.reject(err.message)
+          );
+    return promise;
+};
 UserSchema.statics.addPost = function (account, title, content, name) {
   var that = this;
   var promise
