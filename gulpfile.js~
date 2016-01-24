@@ -198,4 +198,4 @@ gulp.task('replaceHTML', function(){
 gulp.task('default', ['clean'], function() {
   gulp.start('styles', 'bower', 'images','fonts', 'html', 'scripts', 'partials', 'webserver','watch'); //, 'scripts'
 });
-gulp.task('deploy',['styles', 'bower', 'images','fonts', 'scripts', 'partials', 'replaceHTML']);
+gulp.task('build',['styles', 'bower', 'images','fonts', 'scripts', 'partials', 'replaceHTML']);

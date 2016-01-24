@@ -47,6 +47,6 @@
     "start": "./blog-backend/bin/www & gulp",
     "test": "node node_modules/karma/bin/karma start test/karma.conf.js",
     "e2e": "protractor test/protractor-conf.js",
-    "deploy": "gulp deploy"
+    "deploy": "gulp build"
   }
 }
