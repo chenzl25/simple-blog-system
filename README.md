@@ -14,3 +14,8 @@ Angular.js, Express, Mongodb, node.js, gulp
 When you finish the deploy, you can run `npm test`(the directory is `blog-backend`) to test the blog-backend.(I use the mocha and chai to test)
 
 Also after you start your production mode server `npm start`(the directory is `blog-backend`),you can do the e2e test `protractor test/protractor-conf.js`(the directory is `/`, the root).
+
+##Import the data
+1. `cd data` go to the directory `data`
+2. `mongoimport --db Posts --collection posts --file posts.json` to import the posts for mongo
+3. `mongoimport --db Posts --collection users --file users.json` to import the users gor mongo
